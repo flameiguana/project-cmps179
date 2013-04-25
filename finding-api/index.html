@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" type="text/css" href="../styles/ebay.css">
+
+
+<title>eBay Product Search</title>
+</head>
+<body>
+	<div id="container" class="colmask">
+		<div id="header">
+			<div id="headerLeft"><span id="appName">eBay Product Search</span></div>
+			
+			<div id="headerRight">
+				&nbsp;
+			</div>
+			<div id="headerCenter">
+				<div id="searchDiv">
+					<input id="ebayQueryInput" type="text">
+					<button id="searchButton">Search</button>
+					<button id="resetButton">Reset</button>
+				</div>
+			</div>
+		</div>
+
+		<div id="content" class="singlecolumn">
+			<div id="resultsDiv"></div>
+		</div>
+
+		<div id="footer">
+			<p class="course">
+				CMPS 179 eBay tutorial
+			</p>
+			<p class="disclaimer">
+				This site is not affiliated with eBay in any way
+			</p>
+		</div>
+	</div>
+	
+	<!-- 
+		We don't need these until after the page loads so put them at the
+		bottom of the body. This will allow the rest of the DOM to load first.
+		Otherwise it might take some time to process the javascript and
+		present the user with blank screen while they are loading.
+		
+		See: 
+		http://developer.yahoo.com/blogs/ydn/high-performance-sites-rule-6-move-scripts-bottom-7200.html
+	 -->
+	<script id="credentialsScript" type="text/javascript" src="../scripts/ebay-credentials.js"></script>
+	<script id="categoryListScript" type="text/javascript" src="../scripts/ebay-us-category-list.js"></script>
+	<script id="ebayScript" type="text/javascript" src="scripts/ebay-list.js"></script>
+</body>
+</html>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<rexpfd>
+    <destination path="Reid-Swansons-MacBook-Pro.sftp.ic.ucsc.edu:/afs/cats.ucsc.edu/users/k/rwswanso/public_html"/>
+    <options createDirectoryStructure="false" createSelectedOnly="true" descriptionFilePath="/ebay-spring/finding-api.rexpfd" overWriteExistingFiles="false" reviewSynchronize="false" saveSettings="true"/>
+    <selectedElements>
+        <file path="/ebay-spring/.DS_Store"/>
+        <file path="/ebay-spring/.project"/>
+        <file path="/ebay-spring/NOTES"/>
+        <file path="/ebay-spring/WebContent/.DS_Store"/>
+        <folder path="/ebay-spring/WebContent/finding-api"/>
+        <folder path="/ebay-spring/WebContent/scripts"/>
+        <folder path="/ebay-spring/WebContent/styles"/>
+    </selectedElements>
+</rexpfd>
