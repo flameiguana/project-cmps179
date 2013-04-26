@@ -9,17 +9,6 @@ var EBAY_SEARCH = {
 };
 var items;
 
-/*****************************************************************************/
-/** Define some functions ****************************************************/
-/*****************************************************************************/
-/**
- * Convenience function for getting an element by id.
- * @param id
- * @returns The element
- */
-function $(id) {
-	return document.getElementById(id);
-}
 
 /**
  * This is the callback referenced in the getFindUrl function defined below.

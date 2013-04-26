@@ -3,41 +3,33 @@
 <head>
 <meta charset="UTF-8">
 
-<link rel="stylesheet" type="text/css" href="../styles/ebay.css">
+<link rel="stylesheet" type="text/css" href="styles/1337css.css">
 <link rel="stylesheet" type="text/css" href="../styles/dot-luv/jquery.ui.theme.css">
 <link rel="stylesheet" type="text/css" href="../styles/dot-luv/jquery-ui.min.css">
 
-
-<title>eBay Product Search</title>
+<title>Conditional Approval</title>
 </head>
 <body>
-	<div id="container" class="colmask">
-		
+	<div id="sidebar">
 		<div class="ui-widget">
   			<label for="tags">Tags: </label>
   			<input id="tags" />
 		</div>
-
+	</div>
+	<div id="sidebar-alert"></div>
+	<div id="container" class="colmask">
 		<div id="content" class="singlecolumn">
 			<div id="resultsDiv"></div>
 		</div>
 		<div id="resultInfo"></div>
 	</div>
 	
-	<!-- 
-		We don't need these until after the page loads so put them at the
-		bottom of the body. This will allow the rest of the DOM to load first.
-		Otherwise it might take some time to process the javascript and
-		present the user with blank screen while they are loading.
-		
-		See: 
-		http://developer.yahoo.com/blogs/ydn/high-performance-sites-rule-6-move-scripts-bottom-7200.html
-	 -->
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+	<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js"></script>
 	<script id="credentialsScript" type="text/javascript" src="../scripts/ebay-credentials.js"></script>
 	<script id="categoryListScript" type="text/javascript" src="../scripts/ebay-us-category-list.js"></script>
 	<script id="ebayScript" type="text/javascript" src="scripts/ebay-list.js"></script>
-	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-	<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js"></script>
 	<script id="categoryDisplay" type="text/javascript" src="scripts/ebay-display-categories.js"></script>
+	<script id="smartCss" type="text/javascript" src="scripts/smart-css.js"></script>
 </body>
 </html>

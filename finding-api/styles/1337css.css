@@ -1,0 +1,29 @@
+body{
+    background-color: #111;
+    color: #aaa;
+    margin: 0px;
+}
+#sidebar{
+    background-color:#aaa;
+    color: #111;
+    position:  absolute;
+    left: 0px;
+    top: 0px;
+    height: 100%;
+    width: 250px;
+}
+#sidebar-alert{
+    position:  absolute;
+    left: 0px;
+    top: 0px;
+    height: 100%;
+    width: 250px;
+    background-color: #fff;
+    opacity: 50;
+}
+#container
+{
+    position: absolute;
+    height: 100%;
+    overflow: auto;
+}
