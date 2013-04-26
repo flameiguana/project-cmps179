@@ -4,39 +4,24 @@
 <meta charset="UTF-8">
 
 <link rel="stylesheet" type="text/css" href="../styles/ebay.css">
+<link rel="stylesheet" type="text/css" href="../styles/dot-luv/jquery.ui.theme.css">
+<link rel="stylesheet" type="text/css" href="../styles/dot-luv/jquery-ui.min.css">
 
 
 <title>eBay Product Search</title>
 </head>
 <body>
 	<div id="container" class="colmask">
-		<div id="header">
-			<div id="headerLeft"><span id="appName">eBay Product Search</span></div>
-			
-			<div id="headerRight">
-				&nbsp;
-			</div>
-			<div id="headerCenter">
-				<div id="searchDiv">
-					<input id="ebayQueryInput" type="text">
-					<button id="searchButton">Search</button>
-					<button id="resetButton">Reset</button>
-				</div>
-			</div>
+		
+		<div class="ui-widget">
+  			<label for="tags">Tags: </label>
+  			<input id="tags" />
 		</div>
 
 		<div id="content" class="singlecolumn">
 			<div id="resultsDiv"></div>
 		</div>
-
-		<div id="footer">
-			<p class="course">
-				CMPS 179 eBay tutorial
-			</p>
-			<p class="disclaimer">
-				This site is not affiliated with eBay in any way
-			</p>
-		</div>
+		<div id="resultInfo"></div>
 	</div>
 	
 	<!-- 
@@ -51,5 +36,8 @@
 	<script id="credentialsScript" type="text/javascript" src="../scripts/ebay-credentials.js"></script>
 	<script id="categoryListScript" type="text/javascript" src="../scripts/ebay-us-category-list.js"></script>
 	<script id="ebayScript" type="text/javascript" src="scripts/ebay-list.js"></script>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+	<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js"></script>
+	<script id="categoryDisplay" type="text/javascript" src="scripts/ebay-display-categories.js"></script>
 </body>
 </html>

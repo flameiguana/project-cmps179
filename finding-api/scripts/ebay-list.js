@@ -7,6 +7,7 @@
 var EBAY_SEARCH = {
 	resultSize: 100
 };
+var items;
 
 /*****************************************************************************/
 /** Define some functions ****************************************************/
@@ -29,29 +30,27 @@ function $(id) {
  */
 function findCompletedItems(root) {
 	// get the results or return an empty array if there aren't any.
-	var items = root.findCompletedItemsResponse[0].searchResult[0].item || [];
+	items = root.findCompletedItemsResponse[0].searchResult[0].item || [];
 
 	// create an empty array for building up the html output
 	var html = [];
 
 	// create a table
-	html.push('<table><tbody>');
+	//html.push('<table><tbody>');
 
 	for ( var i = 0; i < items.length; ++i) {
 		var item = items[i];
 		var title = item.title;
 		var pic = item.galleryURL;
 		var viewItem = item.viewItemURL;
-
-		// do some sanity checking
-		if (null != title && null != viewItem) {
-			// add a row to the table
-			html.push('<tr><td>' + '<img style="width: 150px; height: 150px;" src="' + pic + '" border="0">'
-					+ '</td>' + '<td><a href="' + viewItem
-					+ '" target="_blank">' + title + '</a></td></tr>');
+		//no idea why you need that [0] there, wth ebay
+		var price = item.sellingStatus[0].currentPrice[0]['__value__'];
+		//sanity check!
+		if(conditionId = item.condition[0]['conditionId'] != undefined && item.condition[0]['conditionId'][0] != 'false' && null != title && null != viewItem){
+			var conditionId = item.condition[0]['conditionId'][0];
+			html.push('<p>price: '+price+'conditionId: '+conditionId + '<a href="'+viewItem+'">'+title+'<a/></p>');
 		}
 	}
-
 	// close the table
 	html.push('</tbody></table>');
 
@@ -63,6 +62,20 @@ function findCompletedItems(root) {
 	document.body.removeChild(lastChild);
 }
 
+function updateDetails(i)
+{
+	var item = items[i];
+	var title = item.title;
+	var location = item.location;
+	var topRated = item.topRatedListing;
+	
+	var html = [];
+	html.push('<b>Title</b>: ' + title + '<br/>');
+	html.push('<b>Location</b>: ' + location + '<br/>');
+	html.push('<b>Top Rated Seller</b>: ' + topRated + '<br/>');
+	document.getElementById("resultInfo").innerHTML = html.join("");
+	//alert(items[i].title);
+}
 
 
 /**
@@ -86,6 +99,7 @@ function getFindUrl(query) {
 	url += "&GLOBAL-ID=EBAY-US";
 	url += "&RESPONSE-DATA-FORMAT=JSON";
 	
+	
 	// When eBay processes the request it will create a javascript object
 	// containing the resulting data and wrap the callback function defined
 	// below around it. So you need to have a function defined in the script
@@ -93,9 +107,15 @@ function getFindUrl(query) {
 	// takes one parameter (i.e., the javascript object ebay returns).
 	url += "&callback=findCompletedItems";
 	url += "&REST-PAYLOAD";
-	url += "&keywords=" + query;
-	//url += "&categoryId=104705"
+	url += "&categoryId=" + query;
 	url += "&paginationInput.entriesPerPage=" + EBAY_SEARCH.resultSize;
+	
+	//filter!
+	url += "&itemFilter[0].name=SoldItemsOnly";
+	url += "&itemFilter[0].value=true";
+	url += '&itemFilter[0].name=Condition';
+	url += '&itemFilter[0].value[0]=New';
+	url += '&itemFilter[0].value[1]=Used';
 	
 	// Make sure to encode the url to make sure spaces and other special
 	// characters are escaped properly.
@@ -107,12 +127,11 @@ function getFindUrl(query) {
 /**
  * Actually request the ebay data 
  */
-function makeEbayRequest() {
-	var query = $("ebayQueryInput").value;
+function makeEbayRequest(query) {
 	
 	// Make sure the query is valid.
 	// If it's not, then return without doing anything
-	if (!valid(query)) {
+	if (!valid(query) && query == undefined) {
 		return;
 	} 
 	
