@@ -2,15 +2,18 @@ body{
     background-color: #111;
     color: #aaa;
     margin: 0px;
+	font-family: Arial;
 }
 #sidebar{
     background-color:#aaa;
     color: #111;
     position:  absolute;
-    left: 0px;
+    left: -250px;
     top: 0px;
     height: 100%;
     width: 250px;
+	opacity: 0;
+	z-index: 100;
 }
 #sidebar-alert{
     position:  absolute;
@@ -18,12 +21,15 @@ body{
     top: 0px;
     height: 100%;
     width: 250px;
-    background-color: #fff;
-    opacity: 50;
+	z-index: 101;
 }
 #container
 {
     position: absolute;
     height: 100%;
+	width: 100%;
     overflow: auto;
+	left: 0px;
+	top: 0px;
+	z-index: 0;
 }

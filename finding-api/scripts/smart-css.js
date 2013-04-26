@@ -1,27 +1,58 @@
-updateCss();
-$(window).resize(updateCss);
+$('body').on('mouseover', '#sidebar-alert', moveSidebar);
+//$('body').on('mouseover', '#container', moveSidebar);
+$('body').on('mouseleave', '#sidebar', moveSidebar);
 
-$('body').on('mouseover', '#sidebar-alert', moveInSidebar);
-$('body').on('mouseleave', '#sidebar', moveOutSidebar);
-//$('body').on('mouseover', '#sidebar', moveInSidebar);
+//this should be set the same as the one in the real css
+var _sidebarWidth = 250;
 
-function moveInSidebar() {
-    $('#sidebar-alert').css('visibility', 'hidden');
-    $('#sidebar').css('visibility', 'visible');
-}
+function moveSidebar(e) {
+	var leftDist = Number($('#sidebar').css('left').replace('px', ''));		//get rid of the 'px' returned by .css('left') and turn it into a number
 
-function moveOutSidebar() {
-    $('#sidebar-alert').css('visibility', 'visible');
-    $('#sidebar').css('visibility', 'hidden');
-}
+	//assuming we're moving to the right
+	var moveTo = 0;
+	var opacity = 1;
+	
+	//if the mouse has left
+	if(e.type == 'mouseleave'){
+		moveTo = -250;
+		opacity = 0;
+	}
+	
+	var distToAnimate = moveTo-leftDist;
+	
+	//hide the alert as soon as we start animating
+	$('#sidebar-alert').css('left', '-250px');
+	
+	//if it's animating, stop and change directions
+   	if($('#sidebar').is(':animated')){
+		$('#sidebar').stop();
+	}
 
-function updateCss() {
-    //this should be set the same as the one in the real css
-    var sideBarWidth = 250;
-    var containerWidth = $(window).width() - sideBarWidth;
-    
-    $('#sidebar').css('width', sideBarWidth + 'px');
-    
-    $('#container').css('left', sideBarWidth + 'px');
-    $('#container').css('width', containerWidth + 'px');
+	/*$('#sidebar').animate({
+		opacity: opacity,
+		left: '+=' + distToAnimate
+	  }, {
+		duration: 500,
+		easing: "easeInQuint",
+		},
+		function() {
+			alert("done");
+		 if(leftDist < 0)
+				$('#sidebar-alert').css('left', '0px');
+			  else
+				$('#sidebar-alert').css('left', '-250px');
+		});	*/
+	 $('#sidebar').animate({
+    opacity: opacity,
+		left: '+=' + distToAnimate
+  }, {
+    duration: 700,
+	easing: 'easeOutExpo',
+    complete: function() {
+      if(e.type != 'mouseleave')
+		$('#sidebar-alert').css('left', '0px');
+	  else
+		$('#sidebar-alert').css('left', '-250px');
+    }
+  });
 }
