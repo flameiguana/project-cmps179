@@ -158,5 +158,3 @@ function clearQuery() {
 	$("ebayQueryInput").value = '';
 	$("resultsDiv").innerHTML = '';
 }
-
-makeEbayRequest(50693);
