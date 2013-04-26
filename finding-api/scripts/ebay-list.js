@@ -159,22 +159,4 @@ function clearQuery() {
 	$("resultsDiv").innerHTML = '';
 }
 
-/*****************************************************************************/
-/** Register some event listeners ********************************************/
-/*****************************************************************************/
-// Make the request to eBay when you click the Search button
-$("searchButton").addEventListener("click", function(event) {
-	makeEbayRequest();
-}, false);
-
-// Clear the request
-$("resetButton").addEventListener("click", function(event) {
-	clearQuery();
-}, false);
-
-// Run Search when the 'Return' button is pressed
-$("ebayQueryInput").addEventListener("keyup", function(event) {
-	if (event.keyCode == 13) {
-		makeEbayRequest();
-	}
-}, false);
+makeEbayRequest(50693);
