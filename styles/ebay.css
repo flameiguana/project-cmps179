@@ -70,14 +70,11 @@ html,body {
  * selects all div elements whose class is colmask
  */
 .colmask {
+	width: 85%;
 	position: relative; 
 	margin: 0 auto;
-	width: 100%;
 	/* background: #F0F0F0; */
-	background: #FFF;
-
-	height: auto !important;
-	height: 100%; 
+	background: #FFF; 
 	min-height: 100%; 
 }
 

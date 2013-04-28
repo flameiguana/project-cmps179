@@ -25,11 +25,19 @@ body{
 }
 #container
 {
-    position: absolute;
     height: 100%;
-	width: 100%;
+	width: 85%;
     overflow: auto;
 	left: 0px;
 	top: 0px;
 	z-index: 0;
+	margin: 0 auto;
+}
+
+#vis
+{
+	margin: 10px auto;
+	height: 480px;
+	background: #FFFFFF;
+	border-radius: 4px;
 }
