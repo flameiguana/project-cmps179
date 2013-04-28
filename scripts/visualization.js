@@ -18,11 +18,11 @@ $(document).ready(drawVisualization);
 //Returns median of an array.
 function getMedian(values){
 	stats.sort(function (a, b) {return a-b});
-	var middle = (values.length/2)integer()
-	if(middle.length % 2)
+	var middle = (values.length/2)integer();
+	if((middle.length % 2) === 0)
 		return values[middle];
 	else //average middle two values
-		return (values[middle-1] + values[middle]) / 2
+		return (values[middle-1] + values[middle]) / 2;
 }
 
 //should pass in data here
