@@ -15,7 +15,7 @@ var  _isFirstItem = true;
 var _firstCategory;
 var _secondCategory;
 var _curCategory;
-var _maxPages = 3;
+var _maxPages = 20;
 var _average = [];
 var _nameCatA, nameCatB;
 var items;
@@ -40,15 +40,16 @@ function findCompletedItems(root) {
 
 	// create an empty array for building up the html output
 	var html = [];
-
+	_resultStats = [];
 	//init numValidItems if it's null
 	if (_resultStats.initialized == undefined) {
 		_resultStats.initialized  = true;
 		_resultStats.numValidItems = 0;
-		for (var i = 0; i < 5; i++) {
+		for (var i = 0; i < 4; i++) {
 			_resultStats[i] = [];
 			_resultStats[i].totalCost= 0;
-			_resultStats[i].totalItems= 0;
+			_resultStats[i].totalItems = 0;
+
 		}
 	}
 	for ( var i = 0; i < items.length; ++i) {
@@ -64,25 +65,27 @@ function findCompletedItems(root) {
 			//html.push('<p>price: '+price+' conditionId: '+conditionId );//'<a href="'+viewItem+'">'+title+'<a/></p>');
 			_resultStats.numValidItems++;
 			//[0] = 1000, [1] =1001-2000, [2] = 2001-3000, [3] = 4000, [4] = 4001-7000
+			
+			//later want to changed to only enable condition ranges if supported.
+			//New
 			if (conditionId == 1000) {
 				_resultStats[0].totalCost += parseFloat(price);
 				_resultStats[0].totalItems++;
 			}
-			else if (conditionId > 1000 && conditionId <= 2000) {
+			//Higer Quality Used
+			else if (conditionId == 3000 || conditionId == 4000) {
 				_resultStats[1].totalCost += parseFloat(price);
 				_resultStats[1].totalItems++;
 			}
-			else if (conditionId > 2000 && conditionId <= 3000) {
+			//Lower Quality Used
+			else if (conditionId == 5000 || conditionId == 6000) {
 				_resultStats[2].totalCost += parseFloat(price);
 				_resultStats[2].totalItems++;
 			}
-			else if (conditionId == 4000) {
+			//Refurbished
+			else if (conditionId == 2000 || conditionId == 2500) {
 				_resultStats[3].totalCost += parseFloat(price);
 				_resultStats[3].totalItems++;
-			}
-			else if (conditionId > 4000 && conditionId <= 7000) {
-				_resultStats[4].totalCost += parseFloat(price);
-				_resultStats[4].totalItems++;
 			}
 		}
 	}
@@ -101,21 +104,24 @@ function findCompletedItems(root) {
 	
 	//if we're not on the last page
 	if (curPageNumber != totalPages && curPageNumber != (_maxPages+1)) {
-		console.log(_resultStats);
+		//console.log(_resultStats);
 		setTimeout(makeEbayRequest(_curCategory, parseFloat(curPageNumber)+1));	
 	}
 	//otherwise make the chart
 	else{
 		_average[_curCategory] = [];
-		for (var i = 0; i < _resultStats.length; i++) {
+		
+		//Only traverse first two conditions
+		for (var i = 0; i < 2; i++) {
 			if (_resultStats[i].totalCost != 0) {
 				_average[_curCategory][i] = _resultStats[i].totalCost/_resultStats[i].totalItems;
 			}
 			else
 				_average[_curCategory][i] = 0;
-			console.log("_average of " + i + ": " + _average[i]);
+			//console.log("_average of " + i + ": " + _average[i]);
 		}
-		console.log(_average);
+		
+		//console.log(_average);
 		if (_isFirstItem) {
 			_isFirstItem = false;
 			_curCategory = _secondCategory;

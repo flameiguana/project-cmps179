@@ -17,8 +17,8 @@ Number.method('integer', function () {
 
 //Returns median of an array.
 function getMedian(values){
-	stats.sort(function (a, b) {return a-b});
-	var middle = (values.length/2).integer();
+	values.sort(function (a, b) {return a-b});
+	var middle = Math.floor(values.length/2);
 	if((middle.length % 2) === 0)
 		return values[middle];
 	else //average middle two values
@@ -54,7 +54,7 @@ function drawVisualization(labelA, labelB, dataofA, dataofB) {
 
 
 	var hoverIn = function(){
-		this.flag = paper.popup(this.bar.x, this.bar.y, "$" + this.bar.value || "0").insertBefore(this);
+		this.flag = paper.popup(this.bar.x, this.bar.y, "$" + Math.round(this.bar.value) || "0").insertBefore(this);
 	};
 
 	var hoverOut = function(){
@@ -70,15 +70,19 @@ function drawVisualization(labelA, labelB, dataofA, dataofB) {
 	var  width = 320, height = 220;
 	var x = divWidth/2 - width;
 	var y = 200;
-	var chartA = paper.barchart(x, y, width, height, dataofA)
+	
+	var opts = 
+	{
+	colors: ["#2F69BF", "#808080"]
+	};
+	var chartA = paper.barchart(x, y, width, height, dataofA, opts)
 		.hover(hoverIn, hoverOut);
-	var chartB = paper.barchart(x + width + 10, y, width, height, dataofB)
+		
+	var chartB = paper.barchart(x + width + 10, y, width, height, dataofB, opts)
 		.hover(hoverIn, hoverOut);
 
 	paper.text(chartA.bars[0].x + width/4, y + height, labelA);
 	paper.text(chartB.bars[0].x + width/4, y + height, labelB);
-
-
 
 
 	//Fibonacci using memoization instead of pure recursion.
