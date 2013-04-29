@@ -13,7 +13,7 @@ Number.method('integer', function () {
 
 
 //Instead of this, draw when data has loaded.
-$(document).ready(drawVisualization);
+//$(document).ready(drawVisualization);
 
 //Returns median of an array.
 function getMedian(values){
@@ -26,7 +26,7 @@ function getMedian(values){
 }
 
 //should pass in data here
-function drawVisualization() {
+function drawVisualization(labelA, labelB, dataofA, dataofB) {
 
 	var divWidth = $('#vis').width();
 	var divHeight = $('#vis').height();
@@ -64,8 +64,6 @@ function drawVisualization() {
 
 	//Pass in median of values.
 	//[used, new]
-	var dataofA = [10, 60];
-	var dataofB = [800, 1200]
 	//var dataCombined = [dataofA, dataofB];
 
 	//Note that both graphs end up being same height although the values are very different. This is very useful.
@@ -77,8 +75,8 @@ function drawVisualization() {
 	var chartB = paper.barchart(x + width + 10, y, width, height, dataofB)
 		.hover(hoverIn, hoverOut);
 
-	paper.text(chartA.bars[0].x + width/4, y + height, "Product Type A");
-	paper.text(chartB.bars[0].x + width/4, y + height, "Product Type B");
+	paper.text(chartA.bars[0].x + width/4, y + height, labelA);
+	paper.text(chartB.bars[0].x + width/4, y + height, labelB);
 
 
 

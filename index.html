@@ -12,15 +12,14 @@
 <body>
 	<!--<div id="sidebar">
 	</div>
-	<div id="sidebar-alert"></div>-->
-	
-	<div id="container" class="colmask">
-	<div id="vis"></div>
+	<div id="sidebar-alert"></div>
 		<div class="ui-widget">
   			<label for="tags">Tags: </label>
   			<input id="tags" />
-		</div>
-		
+		</div>-->
+	
+	<div id="container" class="colmask">
+	<div id="vis"></div>		
 		<div id="content" class="singlecolumn">
 			<div id="resultsDiv"></div>
 		</div>
@@ -37,6 +36,13 @@
 	<script id="categoryDisplay" type="text/javascript" src="scripts/ebay-display-categories.js"></script>
 	<script id="smartCss" type="text/javascript" src="scripts/smart-css.js"></script>
 	<script id="visualization" type="text/javascript" src="scripts/visualization.js"></script>
-	<script> makeEbayRequest(50693); </script>
+	<script>
+		//50693
+		_firstCategory = 31583;
+		_secondCategory = 50693;
+		_nameCatA = "Video Games";
+		_nameCatB = "Glassware";
+		makeEbayRequest(_firstCategory);
+	</script>
 </body>
 </html>
