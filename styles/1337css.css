@@ -1,21 +1,31 @@
 body{
-    background-color: #111;
+    /*scheme id: http://colorschemedesigner.com/#4W41Tw0w0w0w0*/
+    background-color: #ffe9be;
     color: #aaa;
     margin: 0px;
-	font-family: Arial;
+    font-family: Arial;
+    background: rgb(255,255,255); /* Old browsers */
+background: -moz-radial-gradient(center, ellipse cover,  rgba(255,255,255,1) 0%, rgba(255,233,190,1) 100%); /* FF3.6+ */
+background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%,rgba(255,255,255,1)), color-stop(100%,rgba(255,233,190,1))); /* Chrome,Safari4+ */
+background: -webkit-radial-gradient(center, ellipse cover,  rgba(255,255,255,1) 0%,rgba(255,233,190,1) 100%); /* Chrome10+,Safari5.1+ */
+background: -o-radial-gradient(center, ellipse cover,  rgba(255,255,255,1) 0%,rgba(255,233,190,1) 100%); /* Opera 12+ */
+background: -ms-radial-gradient(center, ellipse cover,  rgba(255,255,255,1) 0%,rgba(255,233,190,1) 100%); /* IE10+ */
+background: radial-gradient(ellipse at center,  rgba(255,255,255,1) 0%,rgba(255,233,190,1) 100%); /* W3C */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#ffe9be',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+
 }
 a{
     color: #bbb;
 }
 #sidebar{
     background-color:#aaa;
-    color: #111;
+    color: #8390AA;
     position:  absolute;
     left: -250px;
     top: 0px;
     height: 100%;
     width: 250px;
-	opacity: 0;
+	opacity: 100;
 	z-index: 100;
 }
 #sidebar-alert{
@@ -24,7 +34,7 @@ a{
     top: 0px;
     height: 100%;
     width: 250px;
-	z-index: 101;
+    z-index: 101;
 }
 #container
 {
@@ -41,6 +51,14 @@ a{
 {
 	margin: 10px auto;
 	height: 480px;
-	background: #FFFFFF;
-	border-radius: 4px;
+}
+#footer{
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+}
+.option{
+    color: #FFF;
+    font-size: 20px;
+    font-family: arial;
 }

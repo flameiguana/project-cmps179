@@ -15,7 +15,7 @@ function moveSidebar(e) {
 	//if the mouse has left
 	if(e.type == 'mouseleave'){
 		moveTo = -250;
-		opacity = 0;
+		opacity = 1;
 	}
 	
 	var distToAnimate = moveTo-leftDist;
@@ -27,23 +27,8 @@ function moveSidebar(e) {
    	if($('#sidebar').is(':animated')){
 		$('#sidebar').stop();
 	}
-
-	/*$('#sidebar').animate({
-		opacity: opacity,
-		left: '+=' + distToAnimate
-	  }, {
-		duration: 500,
-		easing: "easeInQuint",
-		},
-		function() {
-			alert("done");
-		 if(leftDist < 0)
-				$('#sidebar-alert').css('left', '0px');
-			  else
-				$('#sidebar-alert').css('left', '-250px');
-		});	*/
 	 $('#sidebar').animate({
-    opacity: opacity,
+		opacity: opacity,
 		left: '+=' + distToAnimate
   }, {
     duration: 700,

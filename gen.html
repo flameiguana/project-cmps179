@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" type="text/css" href="styles/1337css.css">
+
+<style>
+    .label{
+        float: left;
+    }
+    .info{
+        float: left;
+        font-weight: bold;
+        padding-left: 10px;
+    }
+    .clear{
+        float: none;
+    }
+</style>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script id="ebayScript" type="text/javascript" src="scripts/ebay-gen-stats.js"></script>
+    <script id="credentialsScript" type="text/javascript" src="scripts/ebay-credentials.js"></script>
+    <script id="categoryListScript" type="text/javascript" src="scripts/ebay-us-category-list.js"></script>
+    <script id="json" type="text/javascript" src="scripts/json2.js"></script>
+    <script>
+        _nameCatA = "Tablets & eBook Readers";
+        function handleInput() {
+            var input = $("#myform").serializeArray();
+            if(input[1].value != "")
+                _maxPages = parseInt(input[1].value);
+            if (input[0].value != "" ) {
+                _firstCategory = input[0].value;
+                makeEbayRequest(parseFloat(input[0].value))
+                _nameCatA = input[2].value;
+            }
+            else
+                alert("invalid input");
+        }
+    </script>
+</body>
+<title>Stat Generatorl</title>
+</head>
+<body>
+    <form id="myform">
+        Category ID#: <input type="text" name="cid"><br/>
+        Max Pages: <input type="text" name="mxp"><br/>
+        Category Label: <input type="text" name="label">
+    </form>
+    <input type="button" value="Submit" onclick="handleInput()"><br/>
+    <div class="label">Current Page</div>
+    <div class="info" id="currentPage"></div><div class="clear"></div><br/><br/>
+    <div class="label">Max Pages</div>
+    <div class="info" id="maxPages"></div>   <div class="clear"></div><br/><br/>
+    <div class="label">Total Pages</div>
+    <div class="info" id="totalPages"></div><div class="clear"></div><br/><br/>
+    <script id="json" type="text/javascript" src="scripts/data/Gerardo.js"></script>
+    <script>
+        console.log(Gerardo);
+        //50693
+            //_firstCategory = 171485;
+            //_nameCatA = "Tablets & eBook Readers";
+            //makeEbayRequest(_firstCategory);
+    </script>
+</html>
