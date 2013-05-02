@@ -30,10 +30,10 @@ a{
 }
 #sidebar-alert{
     position:  absolute;
-    left: 0px;
+    left: -0px;
     top: 0px;
     height: 100%;
-    width: 250px;
+    width: 100px;
     z-index: 101;
 }
 #container

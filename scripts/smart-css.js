@@ -9,19 +9,24 @@ function moveSidebar(e) {
 	var leftDist = Number($('#sidebar').css('left').replace('px', ''));		//get rid of the 'px' returned by .css('left') and turn it into a number
 
 	//assuming we're moving to the right
-	var moveTo = 0;
+	var moveTo = -1;
 	var opacity = 1;
 	
 	//if the mouse has left
 	if(e.type == 'mouseleave'){
-		moveTo = -250;
+		moveTo = -_sidebarWidth;
 		opacity = 1;
 	}
 	
 	var distToAnimate = moveTo-leftDist;
 	
 	//hide the alert as soon as we start animating
-	$('#sidebar-alert').css('left', '-250px');
+	if(e.type != 'mouseleave'){
+		$('#sidebar-alert').css('left', '-250px');
+	}
+	else{
+		$('#sidebar-alert').css('left', '-0px');
+	}
 	
 	//if it's animating, stop and change directions
    	if($('#sidebar').is(':animated')){
@@ -34,10 +39,7 @@ function moveSidebar(e) {
     duration: 700,
 	easing: 'easeOutExpo',
     complete: function() {
-      if(e.type != 'mouseleave')
-		$('#sidebar-alert').css('left', '0px');
-	  else
-		$('#sidebar-alert').css('left', '-250px');
+     
     }
   });
 }

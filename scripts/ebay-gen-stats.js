@@ -18,6 +18,7 @@ var _maxPages = 20;
 var _average = [];
 var _nameCatA;
 var _items;
+var _sortedItems;
 
 
 /**
@@ -39,51 +40,12 @@ function findCompletedItems(root) {
 
 	// create an empty array for building up the html output
 	var html = [];
-	_resultStats = [];
-	//init numValidItems if it's null
-	if (_resultStats.initialized == undefined) {
-		_resultStats.initialized  = true;
-		_resultStats.numValidItems = 0;
-		for (var i = 0; i < 4; i++) {
-			_resultStats[i] = [];
-			_resultStats[i].totalCost= 0;
-			_resultStats[i].totalItems = 0;
-		}
-	}
 	for ( var i = 0; i < _items.length; ++i) {
 		var item = _items[i];
-		var title = item.title;
-		var pic = item.galleryURL;
-		var viewItem = item.viewItemURL;
-		//no idea why you need that [0] there, wth ebay
-		var price = item.sellingStatus[0].currentPrice[0]['__value__'];
+		var conditionId = item.condition[0]['conditionId'][0];
 		//sanity check!
-		if(conditionId = item.condition[0]['conditionId'] != undefined && item.condition[0]['conditionId'][0] != 'false' && null != title && null != viewItem){
-			var conditionId = item.condition[0]['conditionId'][0];
-			_resultStats.numValidItems++;
-			//[0] = 1000, [1] =1001-2000, [2] = 2001-3000, [3] = 4000, [4] = 4001-7000
-			
-			//later want to changed to only enable condition ranges if supported.
-			//New
-			if (conditionId == 1000) {
-				_resultStats[0].totalCost += parseFloat(price);
-				_resultStats[0].totalItems++;
-			}
-			//Higer Quality Used
-			else if (conditionId == 3000 || conditionId == 4000) {
-				_resultStats[1].totalCost += parseFloat(price);
-				_resultStats[1].totalItems++;
-			}
-			//Lower Quality Used
-			else if (conditionId == 5000 || conditionId == 6000) {
-				_resultStats[2].totalCost += parseFloat(price);
-				_resultStats[2].totalItems++;
-			}
-			//Refurbished
-			else if (conditionId == 2000 || conditionId == 2500) {
-				_resultStats[3].totalCost += parseFloat(price);
-				_resultStats[3].totalItems++;
-			}
+		if(conditionId = item.condition[0]['conditionId'] != undefined && item.condition[0]['conditionId'][0] != 'false'){
+			addAndSortItem(item);
 		}
 	}	
 	// When we're done processing remove the script tag we created below
@@ -116,8 +78,11 @@ function findCompletedItems(root) {
                         }
 		}
                 console.log(_average);
+		console.log(_sortedItems);		
                 _average["label"] = _nameCatA;
-                console.log(JSON.stringify(_average))
+		processData();
+                //console.log(JSON.stringify(_average))
+		//console.log(JSON.stringify(_sortedItems))
                 //json building
                 var j = "{\n";
                 j+="'label': '" + _nameCatA + "',\n";
@@ -125,6 +90,84 @@ function findCompletedItems(root) {
                 j+="\n}";
                 makeThatAjaxrequest(_nameCatA, "var " + _nameCatA.replace(" ", "_") + " = " + j);
 	}
+}
+
+function addAndSortItem(item) {
+	var conditionId = item.condition[0]['conditionId'][0];
+	//no idea why you need that [0] there, wth ebay
+	var price = item.sellingStatus[0].currentPrice[0]['__value__'];
+	var index;
+	_resultStats.numValidItems++;
+	
+	if (_sortedItems == undefined) {
+		_sortedItems = [];
+		_resultStats = [];
+		for (var i = 0; i < 5; i++) {
+			_sortedItems[i] = [];
+			_resultStats[i] = [];
+		}
+	}
+	//[0] = 1000, [1] =1001-2000, [2] = 2001-3000, [3] = 4000, [4] = 4001-7000
+	
+	//later want to changed to only enable condition ranges if supported.
+	//New
+	if (conditionId == 1000) 
+		index = 0;
+	//Higer Quality Used
+	else if (conditionId == 3000 || conditionId == 4000) 
+		index = 1;
+	//Lower Quality Used
+	else if (conditionId == 5000 || conditionId == 6000) 
+		index = 2;
+	//Refurbished
+	else if (conditionId == 2000 || conditionId == 2500) 
+		index = 3;
+	else
+		index = 4;
+	_resultStats[index].totalCost += parseFloat(price);
+	_resultStats[index].totalItems++;
+	if (_sortedItems[index][0] == undefined) {
+		_sortedItems[index][0]  = item;
+	}
+	else{
+		var compPrice = _sortedItems[index][0].sellingStatus[0].currentPrice[0]['__value__'];
+		var insertIndex = 0;
+		var price1 = parseFloat(_sortedItems[index][insertIndex].sellingStatus[0].currentPrice[0]['__value__']);
+		var price2 = -1;
+		if (insertIndex < _sortedItems[index].length)
+			price2 = parseFloat(item.sellingStatus[0].currentPrice[0]['__value__']);
+		while (insertIndex < _sortedItems[index].length && price1 < price2) {
+			price1 = parseFloat(_sortedItems[index][insertIndex].sellingStatus[0].currentPrice[0]['__value__']);
+			insertIndex++;
+		}
+		_sortedItems[index].splice(insertIndex, 0, item);
+	}
+	
+}
+
+function processData() {
+	//this bit will get the first, 25th, 50th, and 99th Percentile
+	var percentilePrices = [];
+	var percentiles = [1, 25, 50, 75, 99];
+	for (var i = 0; i < 5; i++) {
+		percentilePrices[i]= [];
+		var length = _sortedItems[i].length;
+		//make sure the sample size is big enough
+		if (length > 3) {
+			for (var j = 0; j < percentiles.length; j++){
+				var index = Math.floor(length*percentiles[j]/100);
+				if (index == 0) {
+					index = 1;
+				}
+				else if (index >= length-1) {
+					index = length-2;
+				}
+				percentilePrices[i][j] = _sortedItems[i][index].sellingStatus[0].currentPrice[0]['__value__'];
+			}
+		}
+		
+	}
+	console.log(JSON.stringify(percentilePrices));
 }
 
 function makeThatAjaxrequest(name, text) {
