@@ -15,11 +15,10 @@ var  _isFirstItem = true;
 var _firstCategory;
 var _secondCategory;
 var _curCategory;
-var _maxPages = 20;
+var _maxPages = 2;
 var _average = [];
 var _nameCatA, nameCatB;
 var items;
-
 
 /**
  * This is the callback referenced in the getFindUrl function defined below.
