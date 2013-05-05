@@ -50,32 +50,45 @@ function hoverOutLine(){
 function hoverInCircle(){
 	this.attr({cursor : "hand"});
 	this.animate({opacity: 1.0}, 140);
+	//this.flag = this.paper.popup(this.axisX, this.attr('cy'), "$" + this.price, "left");
 }
 function hoverOutCircle(){
 	this.attr({cursor : "pointer"});
 	this.animate({opacity: .4}, 140);
+	//this.flag.remove();
+}
+function hoverInBox(){
+	this.boxPlot.showPrices(this.boxID);
+}
+function hoverOutBox(){
+	this.boxPlot.removePrices();
 }
 
 function goToProduct(){
 	window.open("https://www.google.com/");
 }
 //TODO be able to pass in any number of colors, alternate between these colors
-function BoxPlot(paper, x, y, width, height, data, labels) {
+function BoxPlot(paper, x, y, width, height, data, labels, axesNames) {
 	function buildLine(x1, y1, x2, y2){
 		return "M" + x1 + "," + y1 + "L" + x2 + "," + y2;
 	}
 	if(labels.length != data.length){
 		console.log("Warning: Names and Category counts don't match.");
 	}
-	var that = {};
-	that.x = x;
-	that.y = y;
-	that.width = width;
-	that.height = height;
-	that.paper = paper;
-	that.boxCount = data.length;
-	that.lines = [];
-	
+ 	axesNames = typeof axesNames !== 'undefined' ? axesNames : [null, null];
+
+	this.paper = paper;
+	this.x = x;
+	this.y = y;
+	this.width = width;
+	this.height = height;
+	this.data = data;
+	this.paper = paper;
+	this.boxCount = data.length;
+	this.lines = [];
+	this.priceFlags = [];
+	this.yCoords = [[],[],[],[],[]];
+	yCoords = this.yCoords;
 	//Indicies into data array.
 	var low = 0;
 	var twentyFifth = 1;
@@ -86,61 +99,72 @@ function BoxPlot(paper, x, y, width, height, data, labels) {
 	var circleAttributes = {"stroke-width" : 1, fill:"#007046", opacity : .4};
 	//Find the highest value in data, use it to normalize.
 	var maxValue = 0;
-	for(var i = 0; i < that.boxCount; i++){
+	for(var i = 0; i < this.boxCount; i++){
 		var potentialMax = Math.max.apply(Math, data[i]);
 		if(maxValue < potentialMax)
 			maxValue = potentialMax;
 	}
-	console.log(maxValue);
+
 	var scale = 1 / maxValue * height;
-	var boxWidth =  width/that.boxCount/2;
+	var boxWidth =  width/this.boxCount/2;
 	var margin = boxWidth/2;
 	var circleRadius = boxWidth/9;
 	//draw axes, might wanna style color of text
-	paper.text(x, y - 10, "Price").attr({"font-size" : "14px"});
-	paper.text(x + width + 4, y + height, "Condition").attr({"font-size" : "14px", "text-anchor" : "start"});
+	if(axesNames[0] !== null)
+		paper.text(x, y - 12, axesNames[0]).attr({"font-size" : "14px"});
+
+	if(axesNames[1] !== null)
+		paper.text(x + width + 4, y + height, axesNames[1]).attr({"font-size" : "14px", "text-anchor" : "start"});
 
 	var verticalAxis = buildLine(x, y, x, (y + height));
 	var horizontalAxis = buildLine(x, y + height, x + width, y + height);
 	paper.path(verticalAxis);
 	paper.path(horizontalAxis);
 
-	for(var i = 0; i < that.boxCount; i++){
+	var boxes = [];
+	for(var i = 0; i < this.boxCount; i++){
 		var bubbles = [];
-		var leftX = x + margin + i*width/that.boxCount;
+		var leftX = x + margin + i*width/this.boxCount;
 		
-		var lowY = y + (height - data[i][low] * scale);
-		var twentyFifthY = y + (height - data[i][twentyFifth]*scale);
-		var seventyFifthY = y + (height - data[i][seventyFifth]*scale);
-		var medianY = y + (height - data[i][median] * scale);
-		var highY = y + (height - data[i][high] * scale);
+		yCoords[i][low] =  y + (height - data[i][low] * scale);
+		yCoords[i][twentyFifth] = y + (height - data[i][twentyFifth]*scale);
+		yCoords[i][seventyFifth] = y + (height - data[i][seventyFifth]*scale);
+		yCoords[i][median] = y + (height - data[i][median] * scale);
+		yCoords[i][high] = y + (height - data[i][high] * scale);
 		var length = data[i][seventyFifth] - data[i][twentyFifth];
 
-		var medianLine = buildLine(leftX, medianY, (leftX + boxWidth), medianY);
-		var verticalLine =  buildLine((leftX + boxWidth/2), highY, (leftX + boxWidth/2), lowY);
-		var bottomWhisker = buildLine(leftX + boxWidth/4, lowY, leftX + boxWidth - boxWidth/4, lowY);
-		var topWhisker = buildLine(leftX + boxWidth/4, highY, leftX + boxWidth - boxWidth/4, highY);
+		var medianLine = buildLine(leftX, yCoords[i][median], (leftX + boxWidth), yCoords[i][median]);
+		var verticalLine =  buildLine((leftX + boxWidth/2), yCoords[i][high], (leftX + boxWidth/2), yCoords[i][low]);
+		var bottomWhisker = buildLine(leftX + boxWidth/4, yCoords[i][low], leftX + boxWidth - boxWidth/4, yCoords[i][low]);
+		var topWhisker = buildLine(leftX + boxWidth/4, yCoords[i][high], leftX + boxWidth - boxWidth/4, yCoords[i][high]);
+
 		//Render the boxes
-		//Todo: Hovering over the box displays exact values for prices.
 		paper.path(verticalLine);
 		paper.path(bottomWhisker);
 		paper.path(topWhisker);
-		paper.rect(leftX, y + (height - data[i][seventyFifth]* scale), boxWidth, length * scale)
-			.attr({fill: "#00AD6C", "stroke-width": 1});
+		boxes.push(paper.rect(leftX, y + (height - data[i][seventyFifth]* scale), boxWidth, length * scale)
+			.attr({fill: "#00AD6C", "stroke-width": 1})
+			.hover(hoverInBox, hoverOutBox));
+		boxes[i].boxID = i;
+		boxes[i].boxPlot = this;
+
 		paper.path(medianLine).attr({"stroke-width" : 3, "stroke" :"#1533AE"});
 		//Need a bottom margin, put this below bottom axis
 		paper.text(leftX + boxWidth/2, y + height + 10, labels[i]);
-		//TODO: When hovering over circle, show crosshair and enlarge circle
+
+		bubbles.push(paper.circle(leftX + boxWidth/2, yCoords[i][low], circleRadius));
+		bubbles.push(paper.circle(leftX + boxWidth/2, yCoords[i][twentyFifth], circleRadius));
+		bubbles.push(paper.circle(leftX + boxWidth/2, yCoords[i][median], circleRadius));
+		bubbles.push(paper.circle(leftX + boxWidth/2, yCoords[i][seventyFifth], circleRadius));
+		bubbles.push(paper.circle(leftX + boxWidth/2, yCoords[i][high], circleRadius));
 		
-		bubbles.push(paper.circle(leftX + boxWidth/2, lowY, circleRadius).attr(circleAttributes));
-		bubbles.push(paper.circle(leftX + boxWidth/2, highY, circleRadius).attr(circleAttributes));
-		bubbles.push(paper.circle(leftX + boxWidth/2, twentyFifthY, circleRadius).attr(circleAttributes));
-		bubbles.push(paper.circle(leftX + boxWidth/2, seventyFifthY, circleRadius).attr(circleAttributes));
-		bubbles.push(paper.circle(leftX + boxWidth/2, medianY, circleRadius).attr(circleAttributes));
-		$(bubbles).each(function(){
+		$(bubbles).each(function(j, v){
 			this
 				.hover(hoverInCircle, hoverOutCircle)
-				.click(goToProduct);
+				.click(goToProduct)
+				.attr(circleAttributes);
+			this.axisX = x;
+			this.price = data[i][j];
 		});
 		//Create lines for slopes
 		if(i > 0){
@@ -148,16 +172,36 @@ function BoxPlot(paper, x, y, width, height, data, labels) {
 				Math.abs((data[i-1][median] - data[i][median])/average(data[i-1][median], data[i][median])) * 100;
 			var rightOfPrev = leftX - boxWidth;
 			var prevMedianY = y +  (height - data[i-1][median] * scale);
-			var medianSlope = buildLine(rightOfPrev, prevMedianY, leftX, medianY);
-			that.lines.push(paper.path(medianSlope)
+			var medianSlope = buildLine(rightOfPrev, prevMedianY, leftX,  yCoords[i][median]);
+			this.lines.push(paper.path(medianSlope)
 				.attr({"stroke" :"#1533AE", "stroke-width" : 3, "stroke-linecap": "round"}));
-			that.lines[i-1].hover(hoverInLine, hoverOutLine);
-			//add new property percent 
-			that.lines[i-1].percent = Math.round(percentDifference);
-			that.lines[i-1].middleX = average(rightOfPrev, leftX);
-			that.lines[i-1].middleY = average(prevMedianY, medianY);
+			this.lines[i-1].hover(hoverInLine, hoverOutLine);
+			//add new property percent
+			this.lines[i-1].percent = Math.round(percentDifference);
+			this.lines[i-1].middleX = average(rightOfPrev, leftX);
+			this.lines[i-1].middleY = average(prevMedianY, yCoords[i][median]);
 		}
 	}
+	
+	this.showPrices = function (xIndex){
+		for(var i = 0; i < this.data[xIndex].length; i++){
+			var v = data[xIndex][i];
+			this.priceFlags[i] = this.paper.text(x - 8, this.yCoords[xIndex][i], "$" + v ).attr({"text-anchor" : "end"});
+		}
+		/*
+		$(data[xIndex]).each(function(i, v){
+			priceFlags[i] = paper.text(x-8, yCoords[xIndex][i], "$" + v).attr({"text-anchor" : "end"});
+			//priceFlags[i] = paper.popup(x, yCoords[xIndex][i], "$" + v, "left");
+		});
+		*/
+	};
+	this.removePrices = function(){
+		$(this.priceFlags).each(function(i, v){
+			v.remove();
+		});
+	};
+
+	return this;
 }
 
 
@@ -168,25 +212,6 @@ function drawVisualization(labelA, labelB, dataofA, dataofB) {
 	var divHeight = $('#vis').height();
 	var paper = new Raphael("vis", divWidth, divHeight);
 
-
-	/*
-	median             median
-	price              price
-	 |                 |
-	 |         new     |
-	 |          []     |
-	 |          []     | used    new
-	 |   used   []     |   []    []
-	 |    []    []     |   []    []
-	 |____[]____[]__   |___[]____[]_________ 
-		condtion            condition
-	We use median because we dont think prices are symmetrically distributed.
-	Problems:
-	Doesn't account for distribution of prices (high-end models/brands vs low-end)
-	The user has to make judgements based on two separate graphs.
-	Also want to take into consideration:.
-	Percent of items sold at that condition
-	*/
 
 /*
 	var hoverInLine = function(){
@@ -202,7 +227,7 @@ function drawVisualization(labelA, labelB, dataofA, dataofB) {
 	//[used, new]
 	//var dataCombined = [dataofA, dataofB];
 
-	//Note that both graphs end up being same height although the values are very different. This is very useful.
+	//Note this both graphs end up being same height although the values are very different. This is very useful.
 	var  width = 320, height = 320;
 	var x = divWidth/2 - width;
 	var y = 100;
@@ -222,9 +247,18 @@ function drawVisualization(labelA, labelB, dataofA, dataofB) {
 	paper.text(chartB.bars[0].x + width/4, y + height, labelB);
 	*/
 	
-
     //low, 25, median, 75, high
 	var data = [[2, 4, 8, 9, 13],[ 4, 6, 7, 8, 9], [10, 13, 15 , 17, 19]];
-	var conditionNames = ["New", "Used", "Refurbished"];
-	var graph = BoxPlot(paper, x, y, width, height, data, conditionNames);
+	var datb = [[2, 4, 8, 9, 13], [0.50, 13, 15 , 17, 19]];
+	//remove null entries
+	data = data.filter(function(){return true});
+
+	var conditionNamesa = ["New", "Used", "Refurbished"];
+	var conditionNamesb = ["New", "Used"];
+	var aAxes = ["Price", null];
+	var bAxes = [null, "Condition"];
+	//for categories with different avaiable conditions, we either force selection of similar ones, or just put in blank data.
+	var graphA = new BoxPlot(paper, x, y, width, height, data, conditionNamesa, aAxes);
+	var graphB = new BoxPlot(paper, x + width + 20, y, width, height, datb, conditionNamesb, bAxes);
+	//graphB.remove();
 }

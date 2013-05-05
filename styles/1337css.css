@@ -50,7 +50,9 @@ a{
 #vis
 {
 	margin: 10px auto;
-	height: 900px;
+	height: 1000px;
+    background-color: #fff;
+    border-radius: 15px;
 }
 #footer{
     position: absolute;
