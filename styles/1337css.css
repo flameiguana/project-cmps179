@@ -1,50 +1,75 @@
+h1{
+    color: #111;
+    font-family: 'Bad Script', cursive;
+    font-size: 50px;
+}
 body{
     /*scheme id: http://colorschemedesigner.com/#4W41Tw0w0w0w0*/
-    background-color: #ffe9be;
+    overflow-x:hidden;
+    background: url('images/bg.jpg');
+    background-size: cover;
     color: #aaa;
-    margin: 0px;
-    font-family: Arial;
-    background: rgb(255,255,255); /* Old browsers */
-background: -moz-radial-gradient(center, ellipse cover,  rgba(255,255,255,1) 0%, rgba(255,233,190,1) 100%); /* FF3.6+ */
-background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%,rgba(255,255,255,1)), color-stop(100%,rgba(255,233,190,1))); /* Chrome,Safari4+ */
-background: -webkit-radial-gradient(center, ellipse cover,  rgba(255,255,255,1) 0%,rgba(255,233,190,1) 100%); /* Chrome10+,Safari5.1+ */
-background: -o-radial-gradient(center, ellipse cover,  rgba(255,255,255,1) 0%,rgba(255,233,190,1) 100%); /* Opera 12+ */
-background: -ms-radial-gradient(center, ellipse cover,  rgba(255,255,255,1) 0%,rgba(255,233,190,1) 100%); /* IE10+ */
-background: radial-gradient(ellipse at center,  rgba(255,255,255,1) 0%,rgba(255,233,190,1) 100%); /* W3C */
-filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#ffe9be',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
-
+    margin-left: 200px;
+    margin-right: 200px;
+    font-family: 'Bad Script', cursive;
 }
 a{
     color: #bbb;
 }
-#sidebar{
-    background-color:#aaa;
+.sidebar{
+    background: url('images/sidebar.png');
+    background-size: cover;
     color: #8390AA;
     position:  absolute;
-    left: -250px;
     top: 0px;
     height: 100%;
-    width: 250px;
-	opacity: 100;
-	z-index: 100;
+    width: 180px;
+    opacity: 100;
+    z-index: 100;
 }
-#sidebar-alert{
+.sidebar-alert{
     position:  absolute;
-    left: -0px;
     top: 0px;
     height: 100%;
     width: 100px;
     z-index: 101;
 }
+.sidebar div{
+    font-family: 'Bad Script', cursive;
+    font-size: 30px;
+    padding: 10px;
+}
+.sidebar div:hover{
+    color: black;
+    cursor: pointer;
+}
+#sidebar-left{
+    left: -250px;
+    background: url("images/sidebar.png") 99.999% center no-repeat;
+    width: 195px;
+}
+#sidebar-alert-left{
+    left: 0px;
+}
+#sidebar-right{
+    right: -250px;
+    text-align: right;
+}
+#sidebar-alert-right{
+    right: 0px;
+}
 #container
 {
     height: 100%;
-	width: 85%;
+    width: 100%;
+    margin: 0px 200px 0px 200px;
     overflow: auto;
 	left: 0px;
 	top: 0px;
 	z-index: 0;
 	margin: 0 auto;
+	background: rgba(255, 255, 255, 0.7);
+	border-radius: 10px;
 }
 
 #vis
@@ -53,6 +78,7 @@ a{
 	height: 480px;
 }
 #footer{
+    color: #111;
     position: absolute;
     bottom: 10px;
     right: 10px;

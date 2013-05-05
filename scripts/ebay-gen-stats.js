@@ -67,8 +67,6 @@ function findCompletedItems(root) {
 	//otherwise save the data
 	else{
                 console.log("bailed")
-		
-		//Only traverse first two conditions
 		for (var i = 0; i < 4; i++) {
 			if (_resultStats[i].totalCost != 0) {
 				_average[i] = _resultStats[i].totalCost/_resultStats[i].totalItems;
@@ -77,10 +75,11 @@ function findCompletedItems(root) {
 			    _average[i] = 0;
                         }
 		}
-                console.log(_average);
-		console.log(_sortedItems);		
+		console.log("AVERAGE");
+		//console.log(_sortedItems);		
                 _average["label"] = _nameCatA;
 		processData();
+		console.log(_average);
                 //console.log(JSON.stringify(_average))
 		//console.log(JSON.stringify(_sortedItems))
                 //json building

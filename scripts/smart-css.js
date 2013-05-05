@@ -1,12 +1,20 @@
-$('body').on('mouseover', '#sidebar-alert', moveSidebar);
-//$('body').on('mouseover', '#container', moveSidebar);
-$('body').on('mouseleave', '#sidebar', moveSidebar);
+$('body').on('mouseleave', '#sidebar-left', moveSidebar);
+$('body').on('mouseover', '#sidebar-alert-left', moveSidebar);
+
+$('body').on('mouseleave', '#sidebar-right', moveSidebar);
+$('body').on('mouseover', '#sidebar-alert-right', moveSidebar);
+
+$('.option').click(productSelect);
 
 //this should be set the same as the one in the real css
-var _sidebarWidth = 250;
+var _sidebarWidth = 180;
 
 function moveSidebar(e) {
-	var leftDist = Number($('#sidebar').css('left').replace('px', ''));		//get rid of the 'px' returned by .css('left') and turn it into a number
+	var dir = 'left';
+	if (e.currentTarget.id.indexOf('right') !== -1) {
+		dir = 'right';
+	}
+	var leftDist = Number($('#sidebar-' + dir).css(dir).replace('px', ''));		//get rid of the 'px' returned by .css('left') and turn it into a number
 
 	//assuming we're moving to the right
 	var moveTo = -1;
@@ -22,24 +30,41 @@ function moveSidebar(e) {
 	
 	//hide the alert as soon as we start animating
 	if(e.type != 'mouseleave'){
-		$('#sidebar-alert').css('left', '-250px');
+		$('#sidebar-alert-' + dir).css(dir, '-250px');
 	}
 	else{
-		$('#sidebar-alert').css('left', '-0px');
+		$('#sidebar-alert-' + dir).css(dir, '-0px');
 	}
 	
 	//if it's animating, stop and change directions
-   	if($('#sidebar').is(':animated')){
-		$('#sidebar').stop();
+   	if($('#sidebar-' + dir).is(':animated')){
+		$('#sidebar-' + dir).stop();
 	}
-	 $('#sidebar').animate({
+	if (dir == 'left') {
+		$('#sidebar-' + dir).animate({
 		opacity: opacity,
 		left: '+=' + distToAnimate
-  }, {
-    duration: 700,
-	easing: 'easeOutExpo',
-    complete: function() {
-     
-    }
-  });
+		}, {
+		  duration: 700,
+		      easing: 'easeOutExpo',
+		  complete: function() {
+		   
+		  }
+		});
+	}else{
+		$('#sidebar-' + dir).animate({
+		opacity: opacity,
+		right: '+=' + distToAnimate
+		}, {
+		  duration: 700,
+		      easing: 'easeOutExpo',
+		  complete: function() {
+		   
+		  }
+		});
+	}
+}
+
+function productSelect(e) {
+	console.log(e.target.innerHTML);
 }
