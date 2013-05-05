@@ -15,7 +15,7 @@ var  _isFirstItem = true;
 var _firstCategory;
 var _secondCategory;
 var _curCategory;
-var _maxPages = 2;
+var _maxPages = 0;
 var _average = [];
 var _nameCatA, nameCatB;
 var items;

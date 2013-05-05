@@ -5,15 +5,27 @@ Function.prototype.method = function (name, func) {
 	return this;
 };
 
+/*
+Todo:
+Filter out collections, sets
+
+*/
+
 //Number type now has a method to return an integer.
+//ie (1.5).integer()
 Number.method('integer', function () {
 	return Math[this < 0 ? 'ceil' : 'floor'](this);
 });
-//ie (1.5).integer()
 
+function average(){
+	var total = 0;;
+	for(var i = 0; i < arguments.length; i++){
+		total += arguments[i];
+	}
+	return total/arguments.length;
+}
 
-//Instead of this, draw when data has loaded.
-//$(document).ready(drawVisualization);
+//http://colorschemedesigner.com/#3542bvXw9w0w0
 
 //Returns median of an array.
 function getMedian(values){
@@ -25,17 +37,30 @@ function getMedian(values){
 		return (values[middle-1] + values[middle]) / 2;
 }
 
+function hoverIn(){
+	this.bubble = this.paper.popup(this.middleX, this.middleY, this.percent + "% " + "Difference");
+	this.animate({"stroke-width": 6});
+}
+
+function hoverOut(){
+	this.animate({"stroke-width": 3});
+	this.bubble.animate({opacity: 0}, 200, function () {this.remove();});
+}
 
 //TODO be able to pass in any number of colors, alternate between these colors
-function BoxPlot(paper, x, y, width, height, data) {
+function BoxPlot(paper, x, y, width, height, data, labels) {
+	if(labels.length != data.length){
+		console.log("Warning: Names and Category counts don't match.");
+	}
 	var that = {};
-
 	that.x = x;
 	that.y = y;
 	that.width = width;
 	that.height = height;
 	that.paper = paper;
 	that.boxCount = data.length;
+	that.lines = [];
+	
 	//Indicies into data array.
 	var low = 0;
 	var twentyFifth = 1;
@@ -50,32 +75,52 @@ function BoxPlot(paper, x, y, width, height, data) {
 		if(maxValue < potentialMax)
 			maxValue = potentialMax;
 	}
+	console.log(maxValue);
 	var scale = 1 / maxValue * height;
-	var boxPrev = 0;
-	var boxCurr = 1;
+	var boxWidth =  width/that.boxCount/2;
+	var margin = boxWidth/2;
+
+	//draw axes, might wanna style color of text
+	paper.text(x, y, "$").attr({"font-size" : "14px"});
+	paper.text(x + width - 14, y + height, "C").attr({"font-size" : "14px"});
+	var verticalAxis = "M" + x + "," + (y + 11) + "L" + x + "," + (y + height);
+	var horizontalAxis = "M" + x + "," + (y + height) + "L" + (x + width - 22)  + "," + (y + height);
+	paper.path(verticalAxis);
+	paper.path(horizontalAxis);
+
 	for(var i = 0; i < that.boxCount; i++){
-		var leftX = x + i*width/that.boxCount;
-		var boxWidth =  width/that.boxCount/2;
-		var medianY = height - data[i][median] * scale;
-		var lowY = height - data[i][low] * scale;
-		var highY = height - data[i][high] * scale;
-		var medianLine = "M" + leftX + "," + medianY + "L" + (leftX + boxWidth) + "," + medianY + "Z";
-		var verticalLine = "M" + (leftX + boxWidth/2) + "," + highY + "L" + (leftX + boxWidth/2) + "," + lowY +  "Z";
+		var leftX = x + margin + i*width/that.boxCount;
+		var medianY = y + (height - data[i][median] * scale);
+		var lowY = y + (height - data[i][low] * scale);
+		var highY = y + (height - data[i][high] * scale);
+		var medianLine = "M" + leftX + "," + medianY + "," + (leftX + boxWidth) + "," + medianY;
+		var verticalLine = "M" + (leftX + boxWidth/2) + "," + highY + "," + (leftX + boxWidth/2) + "," + lowY;
 		var length = data[i][seventyFifth] - data[i][twentyFifth];
-		if(i > 0 && i < that.boxCount){
-			var rightOfPrev = leftX - boxWidth;
-			var prevMedianY = height - data[i-1][median] * scale;
-			var medianSlope = "M" + rightOfPrev + "," + prevMedianY + "L" + leftX + "," + medianY + "Z";
-			paper.path(medianSlope);
-		}
+
+		//Render the boxes
+		//Todo: Hovering over the box displays exact values for prices.
 		paper.path(verticalLine);
-		paper.rect(leftX, height - data[i][seventyFifth]* scale, boxWidth, length * scale)
-			.attr({fill: "#2F69BF", "stroke-width": 0});
-		paper.path(medianLine);
+		paper.rect(leftX, y + (height - data[i][seventyFifth]* scale), boxWidth, length * scale)
+			.attr({fill: "#00AD6C", "stroke" : "#60D6A9", "stroke-width": 1});
+		paper.path(medianLine).attr({"stroke-width" : 3, "stroke" :"#1533AE"});
+		//Need a bottom margin, put this below bottom axis
+		paper.text(leftX + boxWidth/2, y + height + 10, labels[i]);
+		//Create lines for slopes
+		if(i > 0){
+			var percentDifference = 
+				Math.abs((data[i-1][median] - data[i][median])/average(data[i-1][median], data[i][median])) * 100;
+			var rightOfPrev = leftX - boxWidth;
+			var prevMedianY = y +  (height - data[i-1][median] * scale);
+			var medianSlope = "M" + rightOfPrev + "," + prevMedianY + "L" + leftX + "," + medianY;
+			that.lines.push(paper.path(medianSlope)
+				.attr({"stroke" :"#1533AE", "stroke-width" : 3, "stroke-linecap": "round"}));
+			that.lines[i-1].hover(hoverIn, hoverOut);
+			//add new property percent 
+			that.lines[i-1].percent = Math.round(percentDifference);
+			that.lines[i-1].middleX = average(rightOfPrev, leftX);
+			that.lines[i-1].middleY = average(prevMedianY, medianY);
+		}
 	}
-
-	//Draw line between medians, should pass in bool to see if this is wanted or not
-
 }
 
 
@@ -106,7 +151,7 @@ function drawVisualization(labelA, labelB, dataofA, dataofB) {
 	Percent of items sold at that condition
 	*/
 
-
+/*
 	var hoverIn = function(){
 		this.flag = paper.popup(this.bar.x, this.bar.y, "$" + Math.round(this.bar.value) || "0").insertBefore(this);
 	};
@@ -114,16 +159,16 @@ function drawVisualization(labelA, labelB, dataofA, dataofB) {
 	var hoverOut = function(){
 		this.flag.animate({opacity: 0}, 200, function () {this.remove();});
 	};
-
+*/
 
 	//Pass in median of values.
 	//[used, new]
 	//var dataCombined = [dataofA, dataofB];
 
 	//Note that both graphs end up being same height although the values are very different. This is very useful.
-	var  width = 320, height = 220;
+	var  width = 500, height = 500;
 	var x = divWidth/2 - width;
-	var y = 200;
+	var y = 100;
 	
 	var opts = 
 	{
@@ -142,19 +187,8 @@ function drawVisualization(labelA, labelB, dataofA, dataofB) {
 	
 
     //low, 25, median, 75, high
-	data = [[2, 4, 8, 9, 13],[4, 6, 7, 8, 9], [10, 13, 15 , 17, 19]];
-	var graph = BoxPlot(paper, x, y, width, height, data);
+	var data = [[2, 4, 8, 9, 13],[ 4, 6, 7, 8, 9], [10, 13, 15 , 17, 19]];
+	var conditionNames = ["New", "Used", "Refurbished"];
+	var graph = BoxPlot(paper, x, y, width, height, data, conditionNames);
 	//Fibonacci using memoization instead of pure recursion.
-	var fibonacci = (function ( ) {
-		var memo = [0, 1];
-		var fib = function (n) {
-		var result = memo[n];
-		if (typeof result !== 'number') {
-			result = fib(n - 1) + fib(n - 2);
-			memo[n] = result;
-		}
-		return result;
-		};
-		return fib;
-	}());
 }
