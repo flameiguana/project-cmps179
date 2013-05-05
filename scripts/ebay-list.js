@@ -92,7 +92,7 @@ function findCompletedItems(root) {
 	//html.push('</tbody></table>');
 
 	// find the results div in the DOM and set its HTML content
-	document.getElementById("resultsDiv").innerHTML += html.join("");
+	//document.getElementById("resultsDiv").innerHTML += html.join("");
 	
 	// When we're done processing remove the script tag we created below
 	var lastChild = document.body.lastChild;
