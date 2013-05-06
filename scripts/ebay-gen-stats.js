@@ -19,6 +19,7 @@ var _average = [];
 var _nameCatA;
 var _items;
 var _sortedItems;
+var _links;
 
 
 /**
@@ -42,10 +43,14 @@ function findCompletedItems(root) {
 	var html = [];
 	for ( var i = 0; i < _items.length; ++i) {
 		var item = _items[i];
+		//console.log(item);
 		var conditionId = item.condition[0]['conditionId'][0];
 		//sanity check!
 		if(conditionId = item.condition[0]['conditionId'] != undefined && item.condition[0]['conditionId'][0] != 'false'){
-			addAndSortItem(item);
+			addAndSortItem(item, 'price');
+		}
+		if(item.sellingStatus[0].bidCount != undefined  && item.sellingStatus[0].bidCount[0] != 0){
+			addAndSortItem(item, 'bids');
 		}
 	}	
 	// When we're done processing remove the script tag we created below
@@ -67,31 +72,42 @@ function findCompletedItems(root) {
 	//otherwise save the data
 	else{
                 console.log("bailed")
+		var totalItems = 0;
 		for (var i = 0; i < 4; i++) {
 			if (_resultStats[i].totalCost != 0) {
 				_average[i] = _resultStats[i].totalCost/_resultStats[i].totalItems;
+				totalItems++;
 			}
 			else{
 			    _average[i] = 0;
                         }
 		}
-		console.log("AVERAGE");
-		//console.log(_sortedItems);		
-                _average["label"] = _nameCatA;
-		processData();
-		console.log(_average);
-                //console.log(JSON.stringify(_average))
-		//console.log(JSON.stringify(_sortedItems))
+		console.log(_sortedItems);
+		var percentilePrice = processData('price');
+		var percentileBids = processData('bids');
+		var labels = genLabels(percentilePrice);
+		console.log(_links);
+		
+		percentilePrice = clipArray(percentilePrice);
+		percentileBids = clipArray(percentileBids);
+		console.log(percentilePrice);
+		console.log(labels);
+		console.log(percentileBids);
+		console.log(_resultStats);
                 //json building
                 var j = "{\n";
                 j+="'label': '" + _nameCatA + "',\n";
-                j+= "'averages': " + JSON.stringify(_average);
+                j+= "'percentilePrice': " + JSON.stringify(percentilePrice)+",\n";
+		j+= "'percentileBids': " + JSON.stringify(percentileBids)+",\n";
+		j+= "'links': " + JSON.stringify(_links)+",\n";
+		j+= "'labels': " + JSON.stringify(labels)+",\n";
+		j+="'totalItems':" + totalItems;
                 j+="\n}";
-                makeThatAjaxrequest(_nameCatA, "var " + _nameCatA.replace(" ", "_") + " = " + j);
+                makeThatAjaxrequest(_nameCatA, j);
 	}
 }
 
-function addAndSortItem(item) {
+function addAndSortItem(item, type) {
 	var conditionId = item.condition[0]['conditionId'][0];
 	//no idea why you need that [0] there, wth ebay
 	var price = item.sellingStatus[0].currentPrice[0]['__value__'];
@@ -100,9 +116,14 @@ function addAndSortItem(item) {
 	
 	if (_sortedItems == undefined) {
 		_sortedItems = [];
+		_sortedItems['price'] = [];
+		_sortedItems['pics'] = [];
+		_sortedItems['bids'] = [];
 		_resultStats = [];
 		for (var i = 0; i < 5; i++) {
-			_sortedItems[i] = [];
+			_sortedItems['price'][i] = [];
+			_sortedItems['pics'][i] = [];
+			_sortedItems['bids'][i] = [];
 			_resultStats[i] = [];
 		}
 	}
@@ -121,36 +142,69 @@ function addAndSortItem(item) {
 	//Refurbished
 	else if (conditionId == 2000 || conditionId == 2500) 
 		index = 3;
+	//Acceptable
 	else
 		index = 4;
-	_resultStats[index].totalCost += parseFloat(price);
-	_resultStats[index].totalItems++;
-	if (_sortedItems[index][0] == undefined) {
-		_sortedItems[index][0]  = item;
+	if (type == 'price') {
+		_resultStats[index].totalCost += parseFloat(price);
+		_resultStats[index].totalItems++;
+	}
+	//if its empty here
+	if (_sortedItems[type][index][0] == undefined) {
+		_sortedItems[type][index][0]  = item;
 	}
 	else{
-		var compPrice = _sortedItems[index][0].sellingStatus[0].currentPrice[0]['__value__'];
 		var insertIndex = 0;
-		var price1 = parseFloat(_sortedItems[index][insertIndex].sellingStatus[0].currentPrice[0]['__value__']);
-		var price2 = -1;
-		if (insertIndex < _sortedItems[index].length)
-			price2 = parseFloat(item.sellingStatus[0].currentPrice[0]['__value__']);
-		while (insertIndex < _sortedItems[index].length && price1 < price2) {
-			price1 = parseFloat(_sortedItems[index][insertIndex].sellingStatus[0].currentPrice[0]['__value__']);
+		var listPrice = parseFloat(getComp(_sortedItems[type][index][insertIndex], type));
+		var itemPrice = parseFloat(getComp(item, type));
+		while (insertIndex < _sortedItems[type][index].length && listPrice <= itemPrice) {
+			listPrice = parseFloat(getComp(_sortedItems[type][index][insertIndex], type));
 			insertIndex++;
 		}
-		_sortedItems[index].splice(insertIndex, 0, item);
+		if (insertIndex == 0) {
+			_sortedItems[type][index].unshift(item);
+		}
+		else if (listPrice <= itemPrice)
+		{
+			_sortedItems[type][index].push(item);
+		}
+		else
+			_sortedItems[type][index].splice(insertIndex-1, 0, item);
 	}
+	//debug stuff
+	/*if (type == 'bids' && index == 0) {
+		if (insertIndex == _sortedItems[type][index].length)
+			console.log("ran out");
+		console.log("itemPrice: " + (itemPrice));
+		console.log("listPrice: " + (listPrice));
+		console.log("insertIndex: " + (insertIndex));
+		console.log (listPrice > itemPrice);
+		for (var i = 0; i < _sortedItems['bids'][0].length; i++) {
+			console.log(getComp(_sortedItems['bids'][0][i], "bids"));
+		}
+		//console.log(_sortedItems['bids'][0]);
+	}*/
 	
 }
 
-function processData() {
-	//this bit will get the first, 25th, 50th, and 99th Percentile
-	var percentilePrices = [];
+//gets the stat to compare the item by
+function getComp(item, type) {
+	if (type=='price') 
+		return parseFloat(item.sellingStatus[0].currentPrice[0]['__value__']);
+	if (type=='bids')
+		return parseFloat(item.sellingStatus[0].bidCount[0]);
+	return -1;
+}
+
+function processData(type) {
+	//this bit will get the first, 25th, 50th, 75th, and 99th Percentile
+	var percentileValues = [];
+	_links = [];
 	var percentiles = [1, 25, 50, 75, 99];
 	for (var i = 0; i < 5; i++) {
-		percentilePrices[i]= [];
-		var length = _sortedItems[i].length;
+		percentileValues[i]= [];
+		_links[i]= [];
+		var length = _sortedItems[type][i].length;
 		//make sure the sample size is big enough
 		if (length > 3) {
 			for (var j = 0; j < percentiles.length; j++){
@@ -161,12 +215,14 @@ function processData() {
 				else if (index >= length-1) {
 					index = length-2;
 				}
-				percentilePrices[i][j] = _sortedItems[i][index].sellingStatus[0].currentPrice[0]['__value__'];
+				percentileValues[i][j] = getComp(_sortedItems[type][i][index], type);
+				_links[i][j] = _sortedItems[type][i][index].viewItemURL[0];
 			}
 		}
 		
 	}
-	console.log(JSON.stringify(percentilePrices));
+	return percentileValues;
+	//console.log(JSON.stringify(percentileValues));
 }
 
 function makeThatAjaxrequest(name, text) {
@@ -179,7 +235,7 @@ function makeThatAjaxrequest(name, text) {
     // callback handler that will be called on success
     request.done(function (response, textStatus, jqXHR){
         // log a message to the console
-        console.log("Hooray, it worked!");
+        console.log("Ajax request succesful!");
         //alert(response);
     });
 
@@ -194,6 +250,37 @@ function makeThatAjaxrequest(name, text) {
 }
 
 
+function genLabels(percentiles) {
+	var lassie = [];
+	if (percentiles[0].length != 0) {
+		lassie.push("New");
+	}
+	if (percentiles[1].length != 0) {
+		lassie.push("HQ Used");
+	}
+	if (percentiles[2].length != 0) {
+		lassie.push("LQ Used");
+	}
+	if (percentiles[3].length != 0) {
+		lassie.push("Refurbished");
+	}
+	if (percentiles[4].length != 0) {
+		lassie.push("Acceptable");
+	}
+	return lassie;
+}
+
+
+//gets rid of the empty subarrays
+function clipArray(percentiles) {
+	var lassie = [];
+	for (var i = 0; i < percentiles.length; i++) {
+		if (percentiles[i].length != 0) {
+			lassie.push(percentiles[i]);
+		}
+	}
+	return lassie;
+}
 /**
  * Communicate with the eBay servers using A GET request.
  * A GET request is a base url that is appended by a series of key/value pairs.
@@ -235,9 +322,14 @@ function getFindUrl(query, pageNumber) {
 	//filter!
 	url += "&itemFilter[0].name=SoldItemsOnly";
 	url += "&itemFilter[0].value=true";
-	url += '&itemFilter[0].name=Condition';
-	url += '&itemFilter[0].value[0]=New';
-	url += '&itemFilter[0].value[1]=Used';
+	url += '&itemFilter[1].name=Condition';
+	url += '&itemFilter[1].value[0]=New';
+	url += '&itemFilter[1].value[1]=Used';
+	url += "&itemFilter[2].name=MaxQuantity";
+	url += "&itemFilter[2].value=2";
+	
+	//outputSelector
+	url +="&outputSelector(0)=GalleryInfo";
 	
 	// Make sure to encode the url to make sure spaces and other special
 	// characters are escaped properly.

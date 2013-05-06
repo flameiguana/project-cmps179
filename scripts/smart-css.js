@@ -67,4 +67,6 @@ function moveSidebar(e) {
 
 function productSelect(e) {
 	console.log(e.target.innerHTML);
+	graphA.remove();
+	graphA = new BoxPlot(paper, x, y, width, height, data, conditionNamesa, aAxes);
 }
