@@ -1,57 +1,4 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-
-<!--<link href='http://fonts.googleapis.com/css?family=Combo' rel='stylesheet' type='text/css'>-->
-<link href='http://fonts.googleapis.com/css?family=Bad+Script' rel='stylesheet' type='text/css'>
-<link rel="stylesheet" type="text/css" href="styles/1337css.css">
-
-
-<title>Conditional Approval</title>
-</head>
-<body>
-	<h1>Conditional Approval</h1>
-	<div class="sidebar" id="sidebar-left">
-		<div class="option">Shoes</div>
-		<div class="option">Tablets</div>
-		<div class="option">Hard Drives</div>
-		<div class="option">Motor Oil</div>
-	</div>
-	<div class="sidebar-alert" id="sidebar-alert-left"></div></div>
-	
-	<div class="sidebar" id="sidebar-right">
-		<div class="option">Shoes</div>
-		<div class="option">Tablets</div>
-		<div class="option">Hard Drives</div>
-		<div class="option">Motor Oil</div>
-	</div>
-	<div class="sidebar-alert" id="sidebar-alert-right"></div></div>
-	
-	<div id="container">
-		<div id="vis"></div>
-		<div id="info"></div>
-	</div>
-	
-	<div id="footer">Copyright 2013 Animals on Fire</div>
-	
-	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-	<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js"></script>
-	<script src="scripts/raphael.js"> </script>
-	<script src="scripts/g.raphael-min.js"> </script>
-	<script src="scripts/g.bar-min.js"> </script>
-	<script id="credentialsScript" type="text/javascript" src="scripts/ebay-credentials.js"></script>
-	<script id="ebayScript" type="text/javascript" src="scripts/ebay-list.js"></script>
-	<script id="smartCss" type="text/javascript" src="scripts/smart-css.js"></script>
-	<script id="visualization" type="text/javascript" src="scripts/visualization.js"></script>
-	<script id="data" type="text/javascript" src="scripts/data/data.js"></script>
-	<script>
-		//50693
-		_firstCategory = 171485;
-		_secondCategory = 3034;
-		_nameCatA = "Tablets & eBook Readers";
-		_nameCatB = "Women's Shoes";
-		var data = {
+var data = {
     "Tablets": {
         'label': 'Tablets & eBook Readers',
         'percentilePrice': [[48,61.04,112.5,265,652.99],[17.49,82,180,300,600],[150,150,290,310,310],[10.11,29.95,55,112.5,399]],
@@ -67,9 +14,3 @@
     'labels': ["New","HQ Used","Acceptable"]
     }
 }
-		var curData = data['Shoes'];
-		drawVisualization(curData['label'], curData['label'], curData['percentilePrice'], curData['percentilePrice'], curData['labels'], curData['labels'], curData['links'], curData['links'], 'Price');
-		//makeEbayRequest(_firstCategory);
-	</script>
-</body>
-</html>
