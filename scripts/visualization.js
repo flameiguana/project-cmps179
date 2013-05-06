@@ -245,7 +245,7 @@ function drawVisualization(labelA, labelB, dataofA, dataofB, conditionNamesA, co
 	var paper = new Raphael("vis", divWidth, divHeight);
 
 	//Note this both graphs end up being same height although the values are very different. This is very useful.
-	var  width = 340, height = 500;
+	var  width = 352, height = 500;
 	var x = divWidth/2 - width;
 	var y = 100;
 	
