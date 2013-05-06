@@ -63,20 +63,12 @@ function hoverOutBox(){
 	this.animate({fill: "#00AD6C"}, 120);
 }
 
-var links = [
-	"https://www.google.com/",
-	"http://api.jquery.com/remove/",
-	"http://slickdeals.net/",
-	"http://www.amazon.com/",
-	"http://www.albumartexchange.com/"
-];
-
 function goToProduct(){
-	window.open(links[this.linkID]);
+	window.open(this.boxPlot.links[this.conditionIndex][this.percentileIndex]);
 }
 
 //TODO be able to pass in any number of colors, alternate between these colors
-function BoxPlot(paper, x, y, width, height, data, labels, axesNames, fakeBoxCount) {
+function BoxPlot(paper, x, y, width, height, data, labels, links, axesNames, fakeBoxCount) {
 	function buildLine(x1, y1, x2, y2){
 		return "M" + x1 + "," + y1 + "L" + x2 + "," + y2;
 	}
@@ -92,9 +84,11 @@ function BoxPlot(paper, x, y, width, height, data, labels, axesNames, fakeBoxCou
 	this.width = width;
 	this.height = height;
 	this.data = data;
+	this.links = links;
 	this.boxCount = typeof fakeBoxCount !== 'undefined' ? fakeBoxCount : data.length;
-	var priceFlags = [];
+	var this_outSideScope = this;
 
+	var priceFlags = [];
 	var yCoords = [];
 	//Used for deleting.
 	var bubbles = [];
@@ -184,7 +178,9 @@ function BoxPlot(paper, x, y, width, height, data, labels, axesNames, fakeBoxCou
 				.click(goToProduct)
 				.attr(circleAttributes);
 			this.axisX = x;
-			this.linkID = j;
+			this.boxPlot = this_outSideScope;
+			this.conditionIndex =i;
+			this.percentileIndex = j;
 			this.price = data[i][j];
 		});
 		//Create diagonal lines
@@ -247,7 +243,7 @@ function drawVisualization(labelA, labelB, dataofA, dataofB) {
 	var paper = new Raphael("vis", divWidth, divHeight);
 
 	//Note this both graphs end up being same height although the values are very different. This is very useful.
-	var  width = 320, height = 320;
+	var  width = 320, height = 420;
 	var x = divWidth/2 - width;
 	var y = 100;
 	
@@ -263,6 +259,30 @@ function drawVisualization(labelA, labelB, dataofA, dataofB) {
     //low, 25, median, 75, high
 	var data = [[2, 4, 8, 9, 13],[ 4, 6, 7, 8, 9], [10, 13, 15 , 17, 19]];
 	var datb = [[2, 4, 8, 9, 13], [0.50, 13, 15 , 17, 22]];
+
+	var linksa = [
+	[
+	"https://www.google.com/",
+	"http://api.jquery.com/remove/",
+	"http://slickdeals.net/",
+	"http://www.amazon.com/",
+	"http://www.albumartexchange.com/"
+	],
+	[
+	"https://www.google.com/",
+	"http://api.jquery.com/remove/",
+	"http://slickdeals.net/",
+	"http://www.amazon.com/",
+	"http://www.albumartexchange.com/"
+	],
+	[
+	"https://www.google.com/",
+	"http://api.jquery.com/remove/",
+	"http://slickdeals.net/",
+	"http://www.amazon.com/",
+	"http://www.albumartexchange.com/"
+	],
+];
 	//remove null entries
 	data = data.filter(function(){return true});
 
@@ -271,7 +291,7 @@ function drawVisualization(labelA, labelB, dataofA, dataofB) {
 	var aAxes = ["Price", null];
 	var bAxes = [null, "Condition"];
 	//for categories with different avaiable conditions, we either force selection of similar ones, or just put in blank data.
-	var graphA = new BoxPlot(paper, x, y, width, height, data, conditionNamesa, aAxes);
-	graphA.remove();
-	var graphB = new BoxPlot(paper, x + width + 26, y, width, height, datb, conditionNamesb, bAxes, 3);
+	var graphA = new BoxPlot(paper, x, y, width, height, data, conditionNamesa, linksa, aAxes);
+	//graphA.remove();
+	var graphB = new BoxPlot(paper, x + width + 30, y, width, height, datb, conditionNamesb, linksa, bAxes, 3);
 }
