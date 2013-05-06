@@ -63,7 +63,6 @@ a{
     height: 100%;
     width: 100%;
     margin: 0px 200px 0px 200px;
-    overflow: auto;
 	left: 0px;
 	top: 0px;
 	z-index: 0;
@@ -74,8 +73,13 @@ a{
 
 #vis
 {
+<<<<<<< HEAD
 	margin: 10px auto;
 	height: 480px;
+=======
+    width: 85%;
+	height: 600px;
+>>>>>>> e0d8364d48383d90f94c176f61143e2b1a9d9a09
 }
 #footer{
     color: #111;

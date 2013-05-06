@@ -5,11 +5,6 @@ Function.prototype.method = function (name, func) {
 	return this;
 };
 
-/*
-Todo:
-Filter out collections, sets
-
-*/
 
 //Number type now has a method to return an integer.
 //ie (1.5).integer()
@@ -37,6 +32,8 @@ function getMedian(values){
 		return (values[middle-1] + values[middle]) / 2;
 }
 
+
+//Callback Functions
 function hoverInLine(){
 	this.flag = this.paper.popup(this.middleX, this.middleY, this.percent + "% " + "Difference");
 	this.animate({"stroke-width": 6});
@@ -58,17 +55,28 @@ function hoverOutCircle(){
 	//this.flag.remove();
 }
 function hoverInBox(){
+	this.boxPlot.removePrices();
+	this.animate({fill: "#FFB300"}, 120);
 	this.boxPlot.showPrices(this.boxID);
 }
 function hoverOutBox(){
-	this.boxPlot.removePrices();
+	this.animate({fill: "#00AD6C"}, 120);
 }
 
+var links = [
+	"https://www.google.com/",
+	"http://api.jquery.com/remove/",
+	"http://slickdeals.net/",
+	"http://www.amazon.com/",
+	"http://www.albumartexchange.com/"
+];
+
 function goToProduct(){
-	window.open("https://www.google.com/");
+	window.open(links[this.linkID]);
 }
+
 //TODO be able to pass in any number of colors, alternate between these colors
-function BoxPlot(paper, x, y, width, height, data, labels, axesNames) {
+function BoxPlot(paper, x, y, width, height, data, labels, axesNames, fakeBoxCount) {
 	function buildLine(x1, y1, x2, y2){
 		return "M" + x1 + "," + y1 + "L" + x2 + "," + y2;
 	}
@@ -78,17 +86,22 @@ function BoxPlot(paper, x, y, width, height, data, labels, axesNames) {
  	axesNames = typeof axesNames !== 'undefined' ? axesNames : [null, null];
 
 	this.paper = paper;
+	this.data = data;
 	this.x = x;
 	this.y = y;
 	this.width = width;
 	this.height = height;
 	this.data = data;
-	this.paper = paper;
-	this.boxCount = data.length;
-	this.lines = [];
-	this.priceFlags = [];
-	this.yCoords = [[],[],[],[],[]];
-	yCoords = this.yCoords;
+	this.boxCount = typeof fakeBoxCount !== 'undefined' ? fakeBoxCount : data.length;
+	var priceFlags = [];
+
+	var yCoords = [];
+	//Used for deleting.
+	var bubbles = [];
+	var boxes = [];
+	var diffLines = [];
+	var otherElements = [];
+
 	//Indicies into data array.
 	var low = 0;
 	var twentyFifth = 1;
@@ -109,21 +122,25 @@ function BoxPlot(paper, x, y, width, height, data, labels, axesNames) {
 	var boxWidth =  width/this.boxCount/2;
 	var margin = boxWidth/2;
 	var circleRadius = boxWidth/9;
-	//draw axes, might wanna style color of text
+
+	//draw axes, might wanna style color of text. If a fake box count is used, the axis length is altered.
+	var altWidth = width;
+	if(data.length != this.boxCount)
+		altWidth = width - (this.boxCount - data.length)*(boxWidth + margin); //adjust width depending on number of boxes missing.
 	if(axesNames[0] !== null)
-		paper.text(x, y - 12, axesNames[0]).attr({"font-size" : "14px"});
-
+		otherElements.push(paper.text(x, y - 12, axesNames[0]).attr({"font-size" : "14px"}));
 	if(axesNames[1] !== null)
-		paper.text(x + width + 4, y + height, axesNames[1]).attr({"font-size" : "14px", "text-anchor" : "start"});
-
+		otherElements.push(paper.text(x + altWidth + 4, y + height, axesNames[1]).attr({"font-size" : "14px", "text-anchor" : "start"}));
 	var verticalAxis = buildLine(x, y, x, (y + height));
-	var horizontalAxis = buildLine(x, y + height, x + width, y + height);
-	paper.path(verticalAxis);
-	paper.path(horizontalAxis);
+	var horizontalAxis = buildLine(x, y + height, x + altWidth, y + height);
+	otherElements.push(paper.path(verticalAxis));
+	otherElements.push(paper.path(horizontalAxis));
 
-	var boxes = [];
-	for(var i = 0; i < this.boxCount; i++){
-		var bubbles = [];
+	
+	for(var i = 0; i < data.length; i++){
+		bubbles[i] = [];
+		yCoords[i] = [];
+
 		var leftX = x + margin + i*width/this.boxCount;
 		
 		yCoords[i][low] =  y + (height - data[i][low] * scale);
@@ -138,55 +155,59 @@ function BoxPlot(paper, x, y, width, height, data, labels, axesNames) {
 		var bottomWhisker = buildLine(leftX + boxWidth/4, yCoords[i][low], leftX + boxWidth - boxWidth/4, yCoords[i][low]);
 		var topWhisker = buildLine(leftX + boxWidth/4, yCoords[i][high], leftX + boxWidth - boxWidth/4, yCoords[i][high]);
 
-		//Render the boxes
-		paper.path(verticalLine);
-		paper.path(bottomWhisker);
-		paper.path(topWhisker);
+		//Whiskers
+		otherElements.push(paper.path(verticalLine));
+		otherElements.push(paper.path(bottomWhisker));
+		otherElements.push(paper.path(topWhisker));
+		//Need a bottom margin, put this below bottom axis
+		otherElements.push(paper.text(leftX + boxWidth/2, y + height + 10, labels[i]));
+
+		//Box
 		boxes.push(paper.rect(leftX, y + (height - data[i][seventyFifth]* scale), boxWidth, length * scale)
 			.attr({fill: "#00AD6C", "stroke-width": 1})
 			.hover(hoverInBox, hoverOutBox));
 		boxes[i].boxID = i;
 		boxes[i].boxPlot = this;
 
-		paper.path(medianLine).attr({"stroke-width" : 3, "stroke" :"#1533AE"});
-		//Need a bottom margin, put this below bottom axis
-		paper.text(leftX + boxWidth/2, y + height + 10, labels[i]);
+		//median line
+		otherElements.push(paper.path(medianLine).attr({"stroke-width" : 3, "stroke" :"#1533AE"}));
 
-		bubbles.push(paper.circle(leftX + boxWidth/2, yCoords[i][low], circleRadius));
-		bubbles.push(paper.circle(leftX + boxWidth/2, yCoords[i][twentyFifth], circleRadius));
-		bubbles.push(paper.circle(leftX + boxWidth/2, yCoords[i][median], circleRadius));
-		bubbles.push(paper.circle(leftX + boxWidth/2, yCoords[i][seventyFifth], circleRadius));
-		bubbles.push(paper.circle(leftX + boxWidth/2, yCoords[i][high], circleRadius));
+		bubbles[i].push(paper.circle(leftX + boxWidth/2, yCoords[i][low], circleRadius));
+		bubbles[i].push(paper.circle(leftX + boxWidth/2, yCoords[i][twentyFifth], circleRadius));
+		bubbles[i].push(paper.circle(leftX + boxWidth/2, yCoords[i][median], circleRadius));
+		bubbles[i].push(paper.circle(leftX + boxWidth/2, yCoords[i][seventyFifth], circleRadius));
+		bubbles[i].push(paper.circle(leftX + boxWidth/2, yCoords[i][high], circleRadius));
 		
-		$(bubbles).each(function(j, v){
+		$(bubbles[i]).each(function(j, v){
 			this
 				.hover(hoverInCircle, hoverOutCircle)
 				.click(goToProduct)
 				.attr(circleAttributes);
 			this.axisX = x;
+			this.linkID = j;
 			this.price = data[i][j];
 		});
-		//Create lines for slopes
+		//Create diagonal lines
 		if(i > 0){
 			var percentDifference = 
 				Math.abs((data[i-1][median] - data[i][median])/average(data[i-1][median], data[i][median])) * 100;
 			var rightOfPrev = leftX - boxWidth;
 			var prevMedianY = y +  (height - data[i-1][median] * scale);
 			var medianSlope = buildLine(rightOfPrev, prevMedianY, leftX,  yCoords[i][median]);
-			this.lines.push(paper.path(medianSlope)
+			diffLines.push(paper.path(medianSlope)
 				.attr({"stroke" :"#1533AE", "stroke-width" : 3, "stroke-linecap": "round"}));
-			this.lines[i-1].hover(hoverInLine, hoverOutLine);
+			diffLines[i-1].hover(hoverInLine, hoverOutLine);
 			//add new property percent
-			this.lines[i-1].percent = Math.round(percentDifference);
-			this.lines[i-1].middleX = average(rightOfPrev, leftX);
-			this.lines[i-1].middleY = average(prevMedianY, yCoords[i][median]);
+			diffLines[i-1].percent = Math.round(percentDifference);
+			diffLines[i-1].middleX = average(rightOfPrev, leftX);
+			diffLines[i-1].middleY = average(prevMedianY, yCoords[i][median]);
 		}
 	}
 	
 	this.showPrices = function (xIndex){
 		for(var i = 0; i < this.data[xIndex].length; i++){
-			var v = data[xIndex][i];
-			this.priceFlags[i] = this.paper.text(x - 8, this.yCoords[xIndex][i], "$" + v ).attr({"text-anchor" : "end"});
+			var v = this.data[xIndex][i];
+			priceFlags[i] = this.paper.text(this.x - 8, yCoords[xIndex][i], "$" + v ).attr({"text-anchor" : "end"});
 		}
 		/*
 		$(data[xIndex]).each(function(i, v){
@@ -196,11 +217,24 @@ function BoxPlot(paper, x, y, width, height, data, labels, axesNames) {
 		*/
 	};
 	this.removePrices = function(){
-		$(this.priceFlags).each(function(i, v){
+		$(priceFlags).each(function(i, v){
 			v.remove();
 		});
 	};
 
+	//Deletes all dom elements attached to graph.
+	this.remove = function(){
+		for(var i = 0; i < bubbles.length; i++){
+			for(var j = 0; j < 5; j++)
+				bubbles[i][j].remove();
+		}
+		for(var i = 0; i < boxes.length; i++)
+			boxes[i].remove();
+		for(var i = 0; i < diffLines.length; i++)
+			diffLines[i].remove();
+		for(var i = 0; i < otherElements.length; i++)
+			otherElements[i].remove();
+	};
 	return this;
 }
 
@@ -212,21 +246,6 @@ function drawVisualization(labelA, labelB, dataofA, dataofB) {
 	var divHeight = $('#vis').height();
 	var paper = new Raphael("vis", divWidth, divHeight);
 
-
-/*
-	var hoverInLine = function(){
-		this.flag = paper.popup(this.bar.x, this.bar.y, "$" + Math.round(this.bar.value) || "0").insertBefore(this);
-	};
-
-	var hoverOutLine = function(){
-		this.flag.animate({opacity: 0}, 200, function () {this.remove();});
-	};
-*/
-
-	//Pass in median of values.
-	//[used, new]
-	//var dataCombined = [dataofA, dataofB];
-
 	//Note this both graphs end up being same height although the values are very different. This is very useful.
 	var  width = 320, height = 320;
 	var x = divWidth/2 - width;
@@ -237,12 +256,6 @@ function drawVisualization(labelA, labelB, dataofA, dataofB) {
 	colors: ["#2F69BF", "#808080"]
 	};
 	/*
-	var chartA = paper.barchart(x, y, width, height, dataofA, opts)
-		.hover(hoverInLine, hoverOutLine);
-		
-	var chartB = paper.barchart(x + width + 10, y, width, height, dataofB, opts)
-		.hover(hoverInLine, hoverOutLine);
-
 	paper.text(chartA.bars[0].x + width/4, y + height, labelA);
 	paper.text(chartB.bars[0].x + width/4, y + height, labelB);
 	*/
@@ -257,7 +270,7 @@ function drawVisualization(labelA, labelB, dataofA, dataofB) {
 	
 	//low, 25, median, 75, high
 	var data = [[2, 4, 8, 9, 13],[ 4, 6, 7, 8, 9], [10, 13, 15 , 17, 19]];
-	var datb = [[2, 4, 8, 9, 13], [0.50, 13, 15 , 17, 19]];
+	var datb = [[2, 4, 8, 9, 13], [0.50, 13, 15 , 17, 22]];
 	//remove null entries
 	data = data.filter(function(){return true});
 
@@ -266,7 +279,13 @@ function drawVisualization(labelA, labelB, dataofA, dataofB) {
 	var aAxes = ["Price", null];
 	var bAxes = [null, "Condition"];
 	//for categories with different avaiable conditions, we either force selection of similar ones, or just put in blank data.
+<<<<<<< HEAD
 	var graphA = new BoxPlot(paper, x, y, width, height, thing['percentilePrice'], thing['labels'], aAxes);
 	var graphB = new BoxPlot(paper, x + width + 20, y, width, height, datb, conditionNamesb, bAxes);
 	//graphB.remove();
+=======
+	var graphA = new BoxPlot(paper, x, y, width, height, data, conditionNamesa, aAxes);
+	graphA.remove();
+	var graphB = new BoxPlot(paper, x + width + 26, y, width, height, datb, conditionNamesb, bAxes, 3);
+>>>>>>> e0d8364d48383d90f94c176f61143e2b1a9d9a09
 }
