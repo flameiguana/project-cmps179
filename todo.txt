@@ -1,0 +1,7 @@
+todo
+-------
+format the text
+    -make a correct hierarchy of arrays
+    -clean out the unused categories
+    -store the labels for each
+    -get the links
