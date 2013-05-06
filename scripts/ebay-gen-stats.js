@@ -72,9 +72,11 @@ function findCompletedItems(root) {
 	//otherwise save the data
 	else{
                 console.log("bailed")
+		var totalItems = 0;
 		for (var i = 0; i < 4; i++) {
 			if (_resultStats[i].totalCost != 0) {
 				_average[i] = _resultStats[i].totalCost/_resultStats[i].totalItems;
+				totalItems++;
 			}
 			else{
 			    _average[i] = 0;
@@ -91,13 +93,15 @@ function findCompletedItems(root) {
 		console.log(percentilePrice);
 		console.log(labels);
 		console.log(percentileBids);
+		console.log(_resultStats);
                 //json building
                 var j = "{\n";
                 j+="'label': '" + _nameCatA + "',\n";
                 j+= "'percentilePrice': " + JSON.stringify(percentilePrice)+",\n";
 		j+= "'percentileBids': " + JSON.stringify(percentileBids)+",\n";
 		j+= "'links': " + JSON.stringify(_links)+",\n";
-		j+= "'labels': " + JSON.stringify(labels);
+		j+= "'labels': " + JSON.stringify(labels)+",\n";
+		j+="'totalItems':" + totalItems;
                 j+="\n}";
                 makeThatAjaxrequest(_nameCatA, j);
 	}

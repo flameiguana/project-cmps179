@@ -279,13 +279,7 @@ function drawVisualization(labelA, labelB, dataofA, dataofB) {
 	var aAxes = ["Price", null];
 	var bAxes = [null, "Condition"];
 	//for categories with different avaiable conditions, we either force selection of similar ones, or just put in blank data.
-<<<<<<< HEAD
-	var graphA = new BoxPlot(paper, x, y, width, height, thing['percentilePrice'], thing['labels'], aAxes);
-	var graphB = new BoxPlot(paper, x + width + 20, y, width, height, datb, conditionNamesb, bAxes);
-	//graphB.remove();
-=======
 	var graphA = new BoxPlot(paper, x, y, width, height, data, conditionNamesa, aAxes);
-	graphA.remove();
+	//graphA.remove();
 	var graphB = new BoxPlot(paper, x + width + 26, y, width, height, datb, conditionNamesb, bAxes, 3);
->>>>>>> e0d8364d48383d90f94c176f61143e2b1a9d9a09
 }
