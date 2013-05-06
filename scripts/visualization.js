@@ -68,7 +68,7 @@ function goToProduct(){
 }
 
 //TODO be able to pass in any number of colors, alternate between these colors
-function BoxPlot(paper, x, y, width, height, data, labels, links, axesNames, fakeBoxCount) {
+function BoxPlot(paper, x, y, width, height, mainLabel, data, labels, links, axesNames, fakeBoxCount) {
 	function buildLine(x1, y1, x2, y2){
 		return "M" + x1 + "," + y1 + "L" + x2 + "," + y2;
 	}
@@ -125,6 +125,7 @@ function BoxPlot(paper, x, y, width, height, data, labels, links, axesNames, fak
 		otherElements.push(paper.text(x, y - 12, axesNames[0]).attr({"font-size" : "14px"}));
 	if(axesNames[1] !== null)
 		otherElements.push(paper.text(x + altWidth + 4, y + height, axesNames[1]).attr({"font-size" : "14px", "text-anchor" : "start"}));
+	otherElements.push(paper.text(x + altWidth/2, y - 22, mainLabel).attr({"font-weight" : "bold", "font-size" : "16px", "text-anchor" : "start"}));
 	var verticalAxis = buildLine(x, y, x, (y + height));
 	var horizontalAxis = buildLine(x, y + height, x + altWidth, y + height);
 	otherElements.push(paper.path(verticalAxis));
@@ -291,7 +292,7 @@ function drawVisualization(labelA, labelB, dataofA, dataofB) {
 	var aAxes = ["Price", null];
 	var bAxes = [null, "Condition"];
 	//for categories with different avaiable conditions, we either force selection of similar ones, or just put in blank data.
-	var graphA = new BoxPlot(paper, x, y, width, height, data, conditionNamesa, linksa, aAxes);
+	var graphA = new BoxPlot(paper, x, y, width, height, "Food", data, conditionNamesa, linksa, aAxes);
 	//graphA.remove();
-	var graphB = new BoxPlot(paper, x + width + 30, y, width, height, datb, conditionNamesb, linksa, bAxes, 3);
+	var graphB = new BoxPlot(paper, x + width + 30, y, width, height, "Drink", datb, conditionNamesb, linksa, bAxes, 3);
 }
