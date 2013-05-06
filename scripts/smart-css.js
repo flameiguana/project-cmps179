@@ -67,6 +67,10 @@ function moveSidebar(e) {
 
 function productSelect(e) {
 	console.log(e.target.innerHTML);
-	graphA.remove();
-	graphA = new BoxPlot(paper, x, y, width, height, data, conditionNamesa, aAxes);
+	var innerHTML = e.target.innerHTML
+	_graphA.remove();
+	_graphB.remove();
+	dataA = data[innerHTML];
+	dataB = data[innerHTML];
+	drawVisualization(dataA['label'], dataB['label'], dataA['percentilePrice'], dataB['percentilePrice'], dataA['labels'], dataB['labels'], dataA['links'], dataB['links'], 'Price');
 }

@@ -237,14 +237,9 @@ function BoxPlot(paper, x, y, width, height, mainLabel, data, labels, links, axe
 
 
 //should pass in data here
-<<<<<<< HEAD
 var _graphA;
 var _graphB;
 function drawVisualization(labelA, labelB, dataofA, dataofB, conditionNamesA, conditionNamesB, linksA, linksB, axisLabel) {
-=======
-function drawVisualization(labelA, labelB, dataofA, dataofB) {
->>>>>>> cddc1a3e2ff4c05873502d704b1c5fac3999ed55
-
 	var divWidth = $('#vis').width();
 	var divHeight = $('#vis').height();
 	var paper = new Raphael("vis", divWidth, divHeight);
@@ -264,55 +259,11 @@ function drawVisualization(labelA, labelB, dataofA, dataofB) {
 	*/
 	
     //low, 25, median, 75, high
-<<<<<<< HEAD
-	/*var data = [[2, 4, 8, 9, 13],[ 4, 6, 7, 8, 9], [10, 13, 15 , 17, 19]];
-=======
-	var data = [[2, 4, 8, 9, 13],[ 4, 6, 7, 8, 9], [10, 13, 15 , 17, 19]];
->>>>>>> cddc1a3e2ff4c05873502d704b1c5fac3999ed55
-	var datb = [[2, 4, 8, 9, 13], [0.50, 13, 15 , 17, 22]];
 
-	var linksa = [
-	[
-	"https://www.google.com/",
-	"http://api.jquery.com/remove/",
-	"http://slickdeals.net/",
-	"http://www.amazon.com/",
-	"http://www.albumartexchange.com/"
-	],
-	[
-	"https://www.google.com/",
-	"http://api.jquery.com/remove/",
-	"http://slickdeals.net/",
-	"http://www.amazon.com/",
-	"http://www.albumartexchange.com/"
-	],
-	[
-	"https://www.google.com/",
-	"http://api.jquery.com/remove/",
-	"http://slickdeals.net/",
-	"http://www.amazon.com/",
-	"http://www.albumartexchange.com/"
-	],
-];
-	//remove null entries
-	data = data.filter(function(){return true});
-
-	var conditionNamesa = ["New", "Used", "Refurbished"];
-<<<<<<< HEAD
-	var conditionNamesb = ["New", "Used"];*/
 	var aAxes = [axisLabel, null];
 	var bAxes = [null, "Condition"];
 	//for categories with different avaiable conditions, we either force selection of similar ones, or just put in blank data.
 	_graphA = new BoxPlot(paper, x, y, width, height, labelA, dataofA, conditionNamesA, linksA, aAxes);
 	//graphA.remove();
 	_graphB = new BoxPlot(paper, x + width + 30, y, width, height, labelB, dataofB, conditionNamesB, linksB, bAxes);
-=======
-	var conditionNamesb = ["New", "Used"];
-	var aAxes = ["Price", null];
-	var bAxes = [null, "Condition"];
-	//for categories with different avaiable conditions, we either force selection of similar ones, or just put in blank data.
-	var graphA = new BoxPlot(paper, x, y, width, height, "Food", data, conditionNamesa, linksa, aAxes);
-	//graphA.remove();
-	var graphB = new BoxPlot(paper, x + width + 30, y, width, height, "Drink", datb, conditionNamesb, linksa, bAxes, 3);
->>>>>>> cddc1a3e2ff4c05873502d704b1c5fac3999ed55
 }
