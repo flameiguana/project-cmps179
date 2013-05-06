@@ -63,7 +63,6 @@ a{
     height: 100%;
     width: 100%;
     margin: 0px 200px 0px 200px;
-    overflow: auto;
 	left: 0px;
 	top: 0px;
 	z-index: 0;
@@ -74,10 +73,8 @@ a{
 
 #vis
 {
-	margin: 10px auto;
-	height: 1000px;
-    background-color: #fff;
-    border-radius: 15px;
+    width: 85%;
+	height: 600px;
 }
 #footer{
     color: #111;
