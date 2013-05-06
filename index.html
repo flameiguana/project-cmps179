@@ -3,36 +3,42 @@
 <head>
 <meta charset="UTF-8">
 
-<!--<link href='http://fonts.googleapis.com/css?family=Combo' rel='stylesheet' type='text/css'>-->
+<link href='http://fonts.googleapis.com/css?family=Combo' rel='stylesheet' type='text/css'>
 <link href='http://fonts.googleapis.com/css?family=Bad+Script' rel='stylesheet' type='text/css'>
 <link rel="stylesheet" type="text/css" href="styles/1337css.css">
 
 
-<title>Conditional Approval</title>
+<title>Does Condition Matter?</title>
 </head>
 <body>
-	<h1>Conditional Approval</h1>
 	<div class="sidebar" id="sidebar-left">
-		<div class="option">Shoes</div>
-		<div class="option">Tablets</div>
-		<div class="option">Hard Drives</div>
-		<div class="option">Motor Oil</div>
+		<div class="option A">Lenses</div>
+		<div class="option A">Amps</div>
+		<div class="option A">Shoes</div>
+		<div class="option A">Cards</div>
 	</div>
 	<div class="sidebar-alert" id="sidebar-alert-left"></div></div>
 	
 	<div class="sidebar" id="sidebar-right">
-		<div class="option">Shoes</div>
-		<div class="option">Tablets</div>
-		<div class="option">Hard Drives</div>
-		<div class="option">Motor Oil</div>
+		<div class="option B">Lenses</div>
+		<div class="option B">Amps</div>
+		<div class="option B">Shoes</div>
+		<div class="option B">Cards</div>
 	</div>
 	<div class="sidebar-alert" id="sidebar-alert-right"></div></div>
 	
 	<div id="container">
+		<h1>Does Condition Matter?</h1>
 		<div id="vis"></div>
 		<div id="info"></div>
+		<br/><br/><br/>
+		<div id="moreCrap">
+		<img src="img/boxPlotPercentiles.png" align="left" style="padding:30px;"/>The Gettysburg Address is a speech by U.S. President Abraham Lincoln, one of the best-known in American history.[1] It was delivered by Lincoln during the American Civil War, on the afternoon of Thursday, November 19, 1863, at the dedication of the Soldiers' National Cemetery in Gettysburg, Pennsylvania, four and a half months after the Union armies defeated those of the Confederacy at the Battle of Gettysburg.
+Abraham Lincoln's carefully crafted address, secondary to other presentations that day, came to be regarded as one of the greatest speeches in American history. In just over two minutes, Lincoln reiterated the principles of human equality espoused by the Declaration of Independence[2] and proclaimed the Civil War as a struggle for the preservation of the Union sundered by the secession crisis,[3] with "a new birth of freedom,"[4] that would bring true equality[5] to all of its citizens, ensuring that democracy would remain a viable form of government and creating a nation in which states' rights were no longer dominant.[5] Lincoln also redefined the Civil War as a struggle not just for the Union, but also for the principle of human equality.[2]
+Beginning with the now-iconic phrase "Four score and seven years ago," referring to the Declaration of Independence, written at the start of the American Revolution in 1776, Lincoln examined the founding principles of the United States in the context of the Civil War, and memorialized the sacrifices of those who gave their lives at Gettysburg and extolled virtues for the listeners (and the nation) to ensure the survival of America's representative democracy, that "government of the people, by the people, for the people, shall not perish from the earth."
+Despite the speech's prominent place in the history and popular culture of the United States, the exact wording and location of the speech are disputed. The five known manuscripts of the Gettysburg Address differ in a number of details and also differ from contemporary newspaper reprints of the speech. Modern scholarship locates the speakers' platform 40 yards (or more) away from the Traditional Site within Soldiers' National Cemetery at the Soldiers' National Monument and entirely within private, adjacent Evergreen Cemetery.</div>
 	</div>
-	
+	<div id="switcher">Price</div>
 	<div id="footer">Copyright 2013 Animals on Fire</div>
 	
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
@@ -52,7 +58,7 @@
 		_nameCatA = "Tablets & eBook Readers";
 		_nameCatB = "Women's Shoes";
 		var dataA = data['Shoes'];
-		var dataB = data['Shoes'];
+		var dataB = data['Cards'];
 		drawVisualization(dataA['label'], dataB['label'], dataA['percentilePrice'], dataB['percentilePrice'], dataA['labels'], dataB['labels'], dataA['links'], dataB['links'], 'Price');
 		//makeEbayRequest(_firstCategory);
 	</script>

@@ -4,10 +4,13 @@ $('body').on('mouseover', '#sidebar-alert-left', moveSidebar);
 $('body').on('mouseleave', '#sidebar-right', moveSidebar);
 $('body').on('mouseover', '#sidebar-alert-right', moveSidebar);
 
-$('.option').click(productSelect);
+$('.A').click(productSelectA);
+$('.B').click(productSelectB);
+$('#switcher').click(switchit);
 
 //this should be set the same as the one in the real css
 var _sidebarWidth = 180;
+var _priceSelected = true;
 
 function moveSidebar(e) {
 	var dir = 'left';
@@ -65,12 +68,40 @@ function moveSidebar(e) {
 	}
 }
 
-function productSelect(e) {
+function productSelectA(e) {
 	console.log(e.target.innerHTML);
 	var innerHTML = e.target.innerHTML
-	_graphA.remove();
-	_graphB.remove();
+	$("#vis").html("");
 	dataA = data[innerHTML];
+	if (_priceSelected) {
+		drawVisualization(dataA['label'], dataB['label'], dataA['percentilePrice'], dataB['percentilePrice'], dataA['labels'], dataB['labels'], dataA['linksPrice'], dataB['linksPrice'], 'Price');
+	}
+	else{
+		drawVisualization(dataA['label'], dataB['label'], dataA['percentileBids'], dataB['percentileBids'], dataA['labels'], dataB['labels'], dataA['linksBids'], dataB['linksBids'], 'Bids');
+	}
+}
+function productSelectB(e) {
+	console.log(e.target.innerHTML);
+	var innerHTML = e.target.innerHTML
+	$("#vis").html("");
 	dataB = data[innerHTML];
-	drawVisualization(dataA['label'], dataB['label'], dataA['percentilePrice'], dataB['percentilePrice'], dataA['labels'], dataB['labels'], dataA['links'], dataB['links'], 'Price');
+	if (_priceSelected) {
+		drawVisualization(dataA['label'], dataB['label'], dataA['percentilePrice'], dataB['percentilePrice'], dataA['labels'], dataB['labels'], dataA['linksPrice'], dataB['linksPrice'], 'Price');
+	}
+	else{
+		drawVisualization(dataA['label'], dataB['label'], dataA['percentileBids'], dataB['percentileBids'], dataA['labels'], dataB['labels'], dataA['linksBids'], dataB['linksBids'], 'Bids');
+	}
+}
+function switchit(e) {
+	$("#vis").html("");
+	if (!_priceSelected) {
+		$("#switcher").html("Price");
+		drawVisualization(dataA['label'], dataB['label'], dataA['percentilePrice'], dataB['percentilePrice'], dataA['labels'], dataB['labels'], dataA['linksPrice'], dataB['linksPrice'], 'Price');
+	}
+	else
+	{
+		$("#switcher").html("Bids");
+		drawVisualization(dataA['label'], dataB['label'], dataA['percentileBids'], dataB['percentileBids'], dataA['labels'], dataB['labels'], dataA['linksBids'], dataB['linksBids'], 'Bids');
+	}
+	_priceSelected = !_priceSelected;
 }

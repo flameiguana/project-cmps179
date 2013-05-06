@@ -1,3 +1,6 @@
+::-webkit-scrollbar { 
+    display: none; 
+}
 h1{
     color: #111;
     font-family: 'Bad Script', cursive;
@@ -12,6 +15,13 @@ body{
     margin-left: 200px;
     margin-right: 200px;
     font-family: 'Bad Script', cursive;
+    
+ -webkit-touch-callout: none;
+-webkit-user-select: none;
+-khtml-user-select: none;
+-moz-user-select: none;
+-ms-user-select: none;
+user-select: none;
 }
 a{
     color: #bbb;
@@ -20,7 +30,7 @@ a{
     background: url('images/sidebar.png');
     background-size: cover;
     color: #8390AA;
-    position:  absolute;
+    position:  fixed;
     top: 0px;
     height: 100%;
     width: 180px;
@@ -28,7 +38,7 @@ a{
     z-index: 100;
 }
 .sidebar-alert{
-    position:  absolute;
+    position:  fixed;
     top: 0px;
     height: 100%;
     width: 100px;
@@ -36,7 +46,7 @@ a{
 }
 .sidebar div{
     font-family: 'Bad Script', cursive;
-    font-size: 30px;
+    font-size: 50px;
     padding: 10px;
 }
 .sidebar div:hover{
@@ -67,28 +77,48 @@ a{
 	top: 0px;
 	z-index: 0;
 	margin: 0 auto;
+}
+tspan{
+    	font-size: 15px;
+	font-family: 'Combo', cursive;
+}
+#exampleImage{
+    float:left;
+    width:15%;
+    margin: 10px auto;
+    padding: 10px;
+}
+#vis
+{
+	margin: 10px auto;
+	width: 85%;
+	height: 600px;
 	background: rgba(255, 255, 255, 0.7);
 	border-radius: 10px;
 }
-
-#vis
-{
-<<<<<<< HEAD
-	margin: 10px auto;
-	height: 480px;
-=======
-    width: 85%;
-	height: 600px;
->>>>>>> e0d8364d48383d90f94c176f61143e2b1a9d9a09
-}
 #footer{
-    color: #111;
+    color: #222;
     position: absolute;
     bottom: 10px;
     right: 10px;
 }
+#switcher{
+    color: #333;
+    position: absolute;
+    font-size: 40px;
+    bottom: 10px;
+    left: 250px;
+}
+#switcher:hover{
+    cursor: pointer;
+    color: #000;
+}
 .option{
     color: #FFF;
-    font-size: 20px;
     font-family: arial;
+}
+#moreCrap{
+    color: black;
+    font-size: 20px;
+    font-weight: bold;
 }

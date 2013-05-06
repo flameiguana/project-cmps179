@@ -5,3 +5,10 @@ format the text
     -clean out the unused categories
     -store the labels for each
     -get the links
+    
+    
+------------------
+Camera Lenses = 3323
+guitar amps 38072
+Women's Shoes = 3034
+cards 212

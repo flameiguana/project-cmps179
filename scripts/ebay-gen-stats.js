@@ -99,7 +99,8 @@ function findCompletedItems(root) {
                 j+="'label': '" + _nameCatA + "',\n";
                 j+= "'percentilePrice': " + JSON.stringify(percentilePrice)+",\n";
 		j+= "'percentileBids': " + JSON.stringify(percentileBids)+",\n";
-		j+= "'links': " + JSON.stringify(_links)+",\n";
+		j+= "'linksPrice': " + JSON.stringify(_links['price'])+",\n";
+		j+= "'linksBids': " + JSON.stringify(_links['bids'])+",\n";
 		j+= "'labels': " + JSON.stringify(labels)+",\n";
 		j+="'totalItems':" + totalItems;
                 j+="\n}";
@@ -199,11 +200,13 @@ function getComp(item, type) {
 function processData(type) {
 	//this bit will get the first, 25th, 50th, 75th, and 99th Percentile
 	var percentileValues = [];
-	_links = [];
-	var percentiles = [1, 25, 50, 75, 99];
+	if (_links == undefined) 
+		_links = [];
+	_links[type] = [];
+	var percentiles = [9, 25, 50, 75, 91];
 	for (var i = 0; i < 5; i++) {
 		percentileValues[i]= [];
-		_links[i]= [];
+		_links[type][i]= [];
 		var length = _sortedItems[type][i].length;
 		//make sure the sample size is big enough
 		if (length > 3) {
@@ -216,7 +219,11 @@ function processData(type) {
 					index = length-2;
 				}
 				percentileValues[i][j] = getComp(_sortedItems[type][i][index], type);
-				_links[i][j] = _sortedItems[type][i][index].viewItemURL[0];
+				if (percentileValues[i][j] > 100) {
+					console.log(percentileValues[i][j]);
+					console.log(_sortedItems[type][i][index]);
+				}
+				_links[type][i][j] = _sortedItems[type][i][index].viewItemURL[0];
 			}
 		}
 		
@@ -318,6 +325,8 @@ function getFindUrl(query, pageNumber) {
 	url += "&categoryId=" + query;
 	url += "&paginationInput.entriesPerPage=" + EBAY_SEARCH.resultSize;
 	url += "&paginationInput.pageNumber=" + pageNumber;
+	//url += "&descriptionSearch=true";
+	//url += "&keywords=" + "the+-lot+-set+-collection+-pack+-assortment+-bundle";
 	
 	//filter!
 	url += "&itemFilter[0].name=SoldItemsOnly";
