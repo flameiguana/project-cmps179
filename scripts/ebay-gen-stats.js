@@ -134,18 +134,19 @@ function addAndSortItem(item, type) {
 	//New
 	if (conditionId == 1000) 
 		index = 0;
-	//Higer Quality Used
-	else if (conditionId == 3000 || conditionId == 4000) 
-		index = 1;
-	//Lower Quality Used
-	else if (conditionId == 5000 || conditionId == 6000) 
-		index = 2;
 	//Refurbished
 	else if (conditionId == 2000 || conditionId == 2500) 
+		index = 1;
+	//Higer Quality Used
+	else if (conditionId == 3000 || conditionId == 4000) 
+		index = 2;
+	//Lower Quality Used
+	else if (conditionId == 5000 || conditionId == 6000) 
 		index = 3;
-	//Acceptable
-	else
+	//For Parts
+	else 
 		index = 4;
+
 	if (type == 'price') {
 		_resultStats[index].totalCost += parseFloat(price);
 		_resultStats[index].totalItems++;
@@ -263,13 +264,13 @@ function genLabels(percentiles) {
 		lassie.push("New");
 	}
 	if (percentiles[1].length != 0) {
-		lassie.push("HQ Used");
+		lassie.push("Refurbished");
 	}
 	if (percentiles[2].length != 0) {
-		lassie.push("LQ Used");
+		lassie.push("HQ Used");
 	}
 	if (percentiles[3].length != 0) {
-		lassie.push("Refurbished");
+		lassie.push("LQ Used");
 	}
 	if (percentiles[4].length != 0) {
 		lassie.push("Acceptable");

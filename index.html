@@ -8,7 +8,7 @@
 <link rel="stylesheet" type="text/css" href="styles/1337css.css">
 
 
-<title>Does Condition Matter?</title>
+<title>Condition Matters</title>
 </head>
 <body>
 	<div class="sidebar" id="sidebar-left">
@@ -28,16 +28,25 @@
 	<div class="sidebar-alert" id="sidebar-alert-right"></div></div>
 	
 	<div id="container">
-		<h1>Does Condition Matter?</h1>
+		<h1>Condition Matters</h1>
 		<div id="vis"></div>
 		<div id="info"></div>
 		<div id="switcher">Price</div>
 		<br/><br/><br/>
 		<div id="moreCrap">
-		<img src="img/boxPlotPercentiles.png" align="left" style="padding:30px;"/>The Gettysburg Address is a speech by U.S. President Abraham Lincoln, one of the best-known in American history.[1] It was delivered by Lincoln during the American Civil War, on the afternoon of Thursday, November 19, 1863, at the dedication of the Soldiers' National Cemetery in Gettysburg, Pennsylvania, four and a half months after the Union armies defeated those of the Confederacy at the Battle of Gettysburg.
-Abraham Lincoln's carefully crafted address, secondary to other presentations that day, came to be regarded as one of the greatest speeches in American history. In just over two minutes, Lincoln reiterated the principles of human equality espoused by the Declaration of Independence[2] and proclaimed the Civil War as a struggle for the preservation of the Union sundered by the secession crisis,[3] with "a new birth of freedom,"[4] that would bring true equality[5] to all of its citizens, ensuring that democracy would remain a viable form of government and creating a nation in which states' rights were no longer dominant.[5] Lincoln also redefined the Civil War as a struggle not just for the Union, but also for the principle of human equality.[2]
-Beginning with the now-iconic phrase "Four score and seven years ago," referring to the Declaration of Independence, written at the start of the American Revolution in 1776, Lincoln examined the founding principles of the United States in the context of the Civil War, and memorialized the sacrifices of those who gave their lives at Gettysburg and extolled virtues for the listeners (and the nation) to ensure the survival of America's representative democracy, that "government of the people, by the people, for the people, shall not perish from the earth."
-Despite the speech's prominent place in the history and popular culture of the United States, the exact wording and location of the speech are disputed. The five known manuscripts of the Gettysburg Address differ in a number of details and also differ from contemporary newspaper reprints of the speech. Modern scholarship locates the speakers' platform 40 yards (or more) away from the Traditional Site within Soldiers' National Cemetery at the Soldiers' National Monument and entirely within private, adjacent Evergreen Cemetery.</div>
+		<img src="img/boxPlotPercentiles.png" align="left" style="padding:30px;"/>
+		<p>In this project, we tried to visualize the relationship between product price and condition among some select categories of items on eBay. Our data visualization device of choice was to use a box-plot, since it is capable of representing products at different price ranges in a way that is easy to compare. To get more out of the typical box-plot, we also drew a line that visually shows difference in price. The various percentage markers can be clicked in order to visit the link of the specific product at that index.</p>
+		<p>We also plotted bid count per condition, and saw that for some categories, used items have more active bidding.</p>
+		<h3>Usage:</h3>
+		<ul>
+			<li>For those who are unfamiliar with box plots, a diagram of the boxes has been provided.</li>
+			<li>Hover to the left or right edges of your browser to pop up a menu with the available categories.</li>
+			<li>Click on the bubbles in the box plot to go to the product page for the item at that percentile.</li>
+			<li>Hovering over the blue diagonal bars will tell you the percent difference between two prices or bid counts.</li>
+			<li>Click on "Prices" or "Bids" below the charts to change between these two data sets.</li>
+			<li>Hover over a box to set the values that are marked on the vertical axis.</li>
+		</ul>
+	</div>
 	</div>
 	<div id="footer">Copyright 2013 Animals on Fire</div>
 	
@@ -57,9 +66,9 @@ Despite the speech's prominent place in the history and popular culture of the U
 		_secondCategory = 3034;
 		_nameCatA = "Tablets & eBook Readers";
 		_nameCatB = "Women's Shoes";
-		var dataA = data['Shoes'];
+		var dataA = data['Lenses'];
 		var dataB = data['Cards'];
-		drawVisualization(dataA['label'], dataB['label'], dataA['percentilePrice'], dataB['percentilePrice'], dataA['labels'], dataB['labels'], dataA['links'], dataB['links'], 'Price');
+		drawVisualization(dataA['label'], dataB['label'], dataA['percentilePrice'], dataB['percentilePrice'], dataA['labels'], dataB['labels'], dataA['linksPrice'], dataB['linksPrice'], 'Price');
 		//makeEbayRequest(_firstCategory);
 	</script>
 </body>

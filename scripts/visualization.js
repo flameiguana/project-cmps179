@@ -122,10 +122,10 @@ function BoxPlot(paper, x, y, width, height, mainLabel, data, labels, links, axe
 	if(data.length != this.boxCount)
 		altWidth = width - (this.boxCount - data.length)*(boxWidth + margin); //adjust width depending on number of boxes missing.
 	if(axesNames[0] !== null)
-		otherElements.push(paper.text(x, y - 12, axesNames[0]).attr({"font-size" : "14px"}));
+		otherElements.push(paper.text(x, y - 14, axesNames[0]).attr({"font-weight" : "bold", "font-size" : "14px"}));
 	if(axesNames[1] !== null)
-		otherElements.push(paper.text(x + altWidth + 4, y + height, axesNames[1]).attr({"font-size" : "14px", "text-anchor" : "start"}));
-	otherElements.push(paper.text(x + altWidth/2, y - 26, mainLabel).attr({"font-weight" : "bold", "font-size" : "16px", "text-anchor" : "start"}));
+		otherElements.push(paper.text(x + altWidth + 4, y + height, axesNames[1]).attr({"font-weight" : "bold", "font-size" : "14px", "text-anchor" : "start"}));
+	otherElements.push(paper.text(x + altWidth/2, y - 26, mainLabel).attr({"font-weight" : "bold", "font-size" : "19px"}));
 	var verticalAxis = buildLine(x, y, x, (y + height));
 	var horizontalAxis = buildLine(x, y + height, x + altWidth, y + height);
 	otherElements.push(paper.path(verticalAxis));
@@ -204,7 +204,7 @@ function BoxPlot(paper, x, y, width, height, mainLabel, data, labels, links, axe
 	this.showPrices = function (xIndex){
 		for(var i = 0; i < this.data[xIndex].length; i++){
 			var v = this.data[xIndex][i];
-			priceFlags[i] = this.paper.text(this.x - 8, yCoords[xIndex][i], "$" + v ).attr({"text-anchor" : "end"});
+			priceFlags[i] = this.paper.text(this.x - 8, yCoords[xIndex][i], + v ).attr({"text-anchor" : "end"});
 		}
 		/*
 		$(data[xIndex]).each(function(i, v){
@@ -245,7 +245,7 @@ function drawVisualization(labelA, labelB, dataofA, dataofB, conditionNamesA, co
 	var paper = new Raphael("vis", divWidth, divHeight);
 
 	//Note this both graphs end up being same height although the values are very different. This is very useful.
-	var  width = 320, height = 420;
+	var  width = 340, height = 500;
 	var x = divWidth/2 - width;
 	var y = 100;
 	
