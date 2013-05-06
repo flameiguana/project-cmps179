@@ -104,9 +104,9 @@ tspan{
 }
 #switcher{
     color: #333;
-    position: absolute;
+    float:left;
+    padding: 20px;
     font-size: 40px;
-    bottom: 10px;
     left: 250px;
 }
 #switcher:hover{
@@ -121,4 +121,5 @@ tspan{
     color: black;
     font-size: 20px;
     font-weight: bold;
+    font-family: 'Combo', cursive;
 }
